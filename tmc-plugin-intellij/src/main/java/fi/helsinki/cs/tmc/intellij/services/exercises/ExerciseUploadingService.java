@@ -22,7 +22,7 @@ import fi.helsinki.cs.tmc.intellij.ui.submissionresult.SubmissionResultHandler;
 import fi.helsinki.cs.tmc.intellij.ui.testresults.TestResultPanelFactory;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 
@@ -45,7 +45,7 @@ public class ExerciseUploadingService {
             ThreadingService threadingService,
             TestRunningService testRunningService,
             CoreProgressObserver observer,
-            ProgressWindow window) {
+            ProgressIndicator window) {
 
         logger.info("Starting to upload an exercise. @ExerciseUploadingService");
 
@@ -97,7 +97,7 @@ public class ExerciseUploadingService {
             TestRunningService testRunningService,
             ObjectFinder finder,
             CoreProgressObserver observer,
-            ProgressWindow window) {
+            ProgressIndicator window) {
 
         logger.info("Calling for threadingService from getResult. @ExerciseUploadingService.");
 

@@ -20,13 +20,16 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.actionSystem.EditorActionManager;
 import com.intellij.openapi.editor.actionSystem.TypedAction;
 import com.intellij.openapi.editor.actionSystem.TypedActionHandler;
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupActivity;
+import com.intellij.openapi.startup.ProjectActivity;
 import com.intellij.openapi.wm.ToolWindowManager;
 
 import fi.helsinki.cs.tmc.intellij.ui.login.LoginDialog;
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +39,13 @@ import org.slf4j.LoggerFactory;
  * The actions to be executed on project startup defined in plugin.xml exercises group on line
  * &lt;postStartupActivity implementation ="fi.helsinki.cs.tmc.intellij.actions.StartupEvent"&gt;
  */
-public class StartupEvent implements StartupActivity {
+public class StartupEvent implements ProjectActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(StartupEvent.class);
 
+    @Nullable
     @Override
-    public void runActivity(@NotNull Project project) {
+    public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
 
         logger.info("Opening project {} and running startup actions. @StartupEvent", project);
 
@@ -49,7 +53,7 @@ public class StartupEvent implements StartupActivity {
 
         ThreadingService threadingService = new ThreadingService();
 
-        ProgressWindow progressWindow =
+        ProgressIndicator progressWindow =
                 ProgressWindowMaker.make(
                         "Running TMC startup actions.", project, false, false, false);
 
@@ -94,7 +98,7 @@ public class StartupEvent implements StartupActivity {
                                                         != null) {
                                                     ToolWindowManager.getInstance(project)
                                                             .getToolWindow("Project")
-                                                            .activate(null);
+                                                            .activate(() -> {});
                                                 }
                                             });
                         }),
@@ -102,6 +106,7 @@ public class StartupEvent implements StartupActivity {
                 progressWindow);
 
         showLoginWindow();
+        return Unit.INSTANCE;
     }
 
     private void setupLoggers(ProgressObserver observer) {

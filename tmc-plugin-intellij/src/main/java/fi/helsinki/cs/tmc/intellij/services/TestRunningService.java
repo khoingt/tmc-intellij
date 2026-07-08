@@ -12,7 +12,7 @@ import fi.helsinki.cs.tmc.langs.domain.TestResult;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -33,7 +33,7 @@ public class TestRunningService {
             ObjectFinder finder) {
         logger.info("Starting to run tests for current project. @TestRunningService");
 
-        ProgressWindow window =
+        ProgressIndicator window =
                 ProgressWindowMaker.make("Running tests", project, true, true, true);
         CoreProgressObserver observer = new CoreProgressObserver(window);
 
@@ -58,7 +58,7 @@ public class TestRunningService {
             final Project project,
             ThreadingService threadingService,
             ObjectFinder finder,
-            ProgressWindow window,
+            ProgressIndicator window,
             final CoreProgressObserver observer) {
         logger.info("Preparing thread for running tests. @TestRunningService");
         threadingService.runWithNotification(
@@ -133,8 +133,8 @@ public class TestRunningService {
         logger.info("Displaying test window. @TestRunningService");
         Project project = finder.findCurrentProject();
 
-        ToolWindowManager.getInstance(project).getToolWindow("TMC Test Results").show(null);
-        ToolWindowManager.getInstance(project).getToolWindow("TMC Test Results").activate(null);
+        ToolWindowManager.getInstance(project).getToolWindow("TMC Test Results").show();
+        ToolWindowManager.getInstance(project).getToolWindow("TMC Test Results").activate(() -> {});
     }
 
     public void showTestResult(final RunResult finalResult) {

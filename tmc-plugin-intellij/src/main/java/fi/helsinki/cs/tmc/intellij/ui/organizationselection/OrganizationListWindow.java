@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.util.containers.hash.HashMap;
+import java.util.HashMap;
 import fi.helsinki.cs.tmc.core.domain.Organization;
 import fi.helsinki.cs.tmc.core.domain.ProgressObserver;
 import fi.helsinki.cs.tmc.core.holders.TmcSettingsHolder;

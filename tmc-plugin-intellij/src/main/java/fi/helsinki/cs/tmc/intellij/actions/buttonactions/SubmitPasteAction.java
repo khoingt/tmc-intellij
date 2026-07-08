@@ -6,7 +6,6 @@ import fi.helsinki.cs.tmc.intellij.snapshots.ButtonInputListener;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 
 import org.slf4j.Logger;
@@ -35,7 +34,7 @@ public class SubmitPasteAction extends AnAction {
         if (pasteService == null
                 || pasteService.getWindow() == null
                 || pasteService.getWindow().isClosed()) {
-            Project project = anActionEvent.getData(PlatformDataKeys.PROJECT);
+            Project project = anActionEvent.getProject();
             pasteService = new PasteService();
             pasteService.showSubmitForm(project, TmcCoreHolder.get());
         } else {

@@ -10,8 +10,8 @@ import fi.helsinki.cs.tmc.intellij.holders.TmcSettingsManager;
 import fi.helsinki.cs.tmc.intellij.services.errors.ErrorMessageService;
 
 import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 
@@ -209,7 +209,7 @@ public class ObjectFinder {
             }
             return null;
         }
-        return DataKeys.PROJECT.getData(dataContext);
+        return CommonDataKeys.PROJECT.getData(dataContext);
     }
 
     public Course findCourseNoDetails(String courseName, TmcCore core) {

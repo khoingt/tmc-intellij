@@ -14,7 +14,7 @@ import fi.helsinki.cs.tmc.intellij.services.errors.ErrorMessageService;
 import fi.helsinki.cs.tmc.intellij.ui.exercisedownloadlist.DownloadListWindow;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +37,7 @@ public class ExerciseDownloadingService {
             ThreadingService threadingService,
             Project project,
             boolean downloadAll,
-            ProgressWindow window) {
+            ProgressIndicator window) {
 
         logger.info(
                 "Preparing to start checking for available exercises."
@@ -48,7 +48,7 @@ public class ExerciseDownloadingService {
 
     public static void startDownloading(List<Exercise> exercises) {
         logger.info("Preparing to start downloading exercises. @ExerciseDownloadingService");
-        ProgressWindow window =
+        ProgressIndicator window =
                 ProgressWindowMaker.make(
                         "Downloading exercises, this may take a while",
                         new ObjectFinder().findCurrentProject(),

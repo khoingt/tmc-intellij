@@ -2,17 +2,17 @@ package fi.helsinki.cs.tmc.intellij.io;
 
 import fi.helsinki.cs.tmc.core.domain.ProgressObserver;
 
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.ProgressIndicator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CoreProgressObserver extends ProgressObserver {
 
-    private final ProgressWindow progressWindow;
+    private final ProgressIndicator progressWindow;
     private static final Logger logger = LoggerFactory.getLogger(CoreProgressObserver.class);
 
-    public CoreProgressObserver(ProgressWindow progressWindow) {
+    public CoreProgressObserver(ProgressIndicator progressWindow) {
         this.progressWindow = progressWindow;
     }
 
@@ -40,6 +40,6 @@ public class CoreProgressObserver extends ProgressObserver {
     @Override
     public void end(long mysteryLong) {
         logger.info("Closing progress window. @CoreProgressObserver");
-        progressWindow.dispose();
+        progressWindow.stop();
     }
 }

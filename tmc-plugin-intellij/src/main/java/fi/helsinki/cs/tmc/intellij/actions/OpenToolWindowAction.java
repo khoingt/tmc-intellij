@@ -52,9 +52,9 @@ public class OpenToolWindowAction extends AnAction implements ToolWindowFactory 
         }
 
         if (projectList.isVisible()) {
-            projectList.hide(null);
+            projectList.hide();
         } else {
-            ToolWindowManager.getInstance(project).getToolWindow("TMC Project List").show(null);
+            ToolWindowManager.getInstance(project).getToolWindow("TMC Project List").show();
             ToolWindowManager.getInstance(project);
         }
     }
@@ -63,7 +63,7 @@ public class OpenToolWindowAction extends AnAction implements ToolWindowFactory 
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         logger.info("Creating tool window content. @OpenToolWindowAction");
         ProjectListWindow window = new ProjectListWindow();
-        ContentFactory cf = ContentFactory.SERVICE.getInstance();
+        ContentFactory cf = ContentFactory.getInstance();
         Content content = cf.createContent(window.getBasePanel(), "", true);
         toolWindow.getContentManager().addContent(content);
         ProjectListManagerHolder.get().addWindow(window);

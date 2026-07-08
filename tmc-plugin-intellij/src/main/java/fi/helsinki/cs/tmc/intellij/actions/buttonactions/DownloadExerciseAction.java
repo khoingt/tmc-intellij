@@ -12,8 +12,7 @@ import fi.helsinki.cs.tmc.intellij.snapshots.ButtonInputListener;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 
@@ -34,7 +33,7 @@ public class DownloadExerciseAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
-        Project project = anActionEvent.getData(PlatformDataKeys.PROJECT);
+        Project project = anActionEvent.getProject();
         new ButtonInputListener().receiveDownloadExercise();
         downloadExercises(project, false);
     }
@@ -56,7 +55,7 @@ public class DownloadExerciseAction extends AnAction {
     }
 
     private void startDownloadExercise(Project project, boolean downloadAll) throws Exception {
-        ProgressWindow window =
+        ProgressIndicator window =
                 ProgressWindowMaker.make(
                         "Downloading exercises, this may take several minutes",
                         project,

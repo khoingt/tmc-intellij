@@ -1,25 +1,25 @@
 package fi.helsinki.cs.tmc.intellij.services;
 
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.util.ProgressIndicatorBase;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProgressWindowMaker {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProgressWindow.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProgressWindowMaker.class);
 
-    public static ProgressWindow make(
+    public static ProgressIndicator make(
             String title,
             Project project,
             boolean cancelable,
             boolean hidable,
             boolean indeterminate) {
         logger.info("Creating progress window. @ProgressWindowMaker");
-        ProgressWindow progressWindow = new ProgressWindow(cancelable, hidable, project);
+        ProgressIndicatorBase progressWindow = new ProgressIndicatorBase();
         progressWindow.setIndeterminate(indeterminate);
-        progressWindow.setTitle(title);
-        progressWindow.setDelayInMillis(500);
+        progressWindow.setText(title);
 
         return progressWindow;
     }

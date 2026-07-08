@@ -5,7 +5,6 @@ import fi.helsinki.cs.tmc.intellij.snapshots.ButtonInputListener;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ public class DownloadAllExercisesAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
         logger.info("Starting to download all courses exercises. @DownloadAllExercisesAction");
-        Project project = anActionEvent.getData(PlatformDataKeys.PROJECT);
+        Project project = anActionEvent.getProject();
         new ButtonInputListener().receiveDownloadExercise();
         new DownloadExerciseAction().downloadExercises(project, true);
     }

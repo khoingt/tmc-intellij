@@ -9,7 +9,7 @@ import fi.helsinki.cs.tmc.intellij.services.ThreadingService;
 import fi.helsinki.cs.tmc.intellij.services.exercises.CourseAndExerciseManager;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -114,7 +114,7 @@ public class ProjectListWindow {
         refreshButton.setBorderPainted(true);
         refreshButton.setEnabled(true);
 
-        ProgressWindow window = ProgressWindowMaker.make("Refreshing project list",
+        ProgressIndicator window = ProgressWindowMaker.make("Refreshing project list",
                 new ObjectFinder().findCurrentProject(), false, true, true);
 
         refreshButton.addActionListener(actionEvent -> {

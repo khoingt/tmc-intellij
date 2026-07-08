@@ -3,7 +3,7 @@ package fi.helsinki.cs.tmc.intellij.services;
 
 
 import com.google.common.base.Optional;
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import fi.helsinki.cs.tmc.core.TmcCore;
 import fi.helsinki.cs.tmc.core.domain.Course;
@@ -49,7 +49,7 @@ public class UploadExerciseServiceTest {
         when(mockCourseAndExerciseManager.isCourseInDatabase(null)).thenReturn(true);
         when(mockCourseAndExerciseManager.getExercise(null, exercise.getName())).thenReturn(exercise);
 
-        ProgressWindow window = mock(ProgressWindow.class);
+        ProgressIndicator window = mock(ProgressIndicator.class);
         CoreProgressObserver observer = mock(CoreProgressObserver.class);
 
         ObjectFinder finder = mock(ObjectFinder.class);
@@ -60,7 +60,7 @@ public class UploadExerciseServiceTest {
                 mockCourseAndExerciseManager, threadingService, mock(TestRunningService.class),
                 observer, window);
 
-        verify(threadingService).runWithNotification(any(Runnable.class), any(Project.class), any(ProgressWindow.class));
+        verify(threadingService).runWithNotification(any(Runnable.class), any(Project.class), any(ProgressIndicator.class));
         verify(mockCourseAndExerciseManager).updateSingleCourse(null,
                 checker, finder, settings);
     }

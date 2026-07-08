@@ -21,14 +21,10 @@
     ]]>
   </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="141.0"/>
+  <idea-version since-build="261.*"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.java</depends>
 
   <extensions defaultExtensionNs="com.intellij">
 
@@ -47,7 +43,7 @@
 
 
   <actions>
-    <group id="TMC.Menu" text="TMC" description="TMC Menu">
+    <group id="TMC.Menu" text="TMC" description="TMC Menu" popup="true">
       <add-to-group group-id="MainMenu" anchor="last"  />
 
       <action id="Settings" class="fi.helsinki.cs.tmc.intellij.actions.buttonactions.TmcSettingsAction" text="Settings" description="TMC Settings" />
@@ -67,19 +63,23 @@
     </action>
 
     <action class="fi.helsinki.cs.tmc.intellij.actions.OpenToolWindowAction" text="Open TMC Exercise List" description="Open TMC Exercise list" id="OpenListAction"  icon="TmcIcons.SIDE_PANEL" >
-      <add-to-group group-id="NavBarToolBar" anchor="first" />
+      <add-to-group group-id="MainToolBar" anchor="first" />
+      <add-to-group group-id="MainToolbarRight" anchor="first" />
     </action>
 
     <action class="fi.helsinki.cs.tmc.intellij.actions.buttonactions.UploadExerciseAction" text="Upload current exercise" description="Upload exercise" id="SubmitButtonAction" icon="TmcIcons.SUBMIT_BUTTON" >
-      <add-to-group group-id="NavBarToolBar" anchor="first" />
+      <add-to-group group-id="MainToolBar" anchor="first" />
+      <add-to-group group-id="MainToolbarRight" anchor="first" />
     </action>
 
     <action class="fi.helsinki.cs.tmc.intellij.actions.buttonactions.RunTestsAction" text="Run tests for current project" description="Run tests for current project" id="RunTestsAction" icon="TmcIcons.TEST_BUTTON" >
-      <add-to-group group-id="NavBarToolBar" anchor="first" />
+      <add-to-group group-id="MainToolBar" anchor="first" />
+      <add-to-group group-id="MainToolbarRight" anchor="first" />
     </action>
 
     <action class="fi.helsinki.cs.tmc.intellij.actions.buttonactions.RunProjectAction" text="Run current project" description="Run project" id="RunProjectAction" icon="TmcIcons.RUN_BUTTON" >
-      <add-to-group group-id="NavBarToolBar" anchor="first" />
+      <add-to-group group-id="MainToolBar" anchor="first" />
+      <add-to-group group-id="MainToolbarRight" anchor="first" />
     </action>
 
   </actions>

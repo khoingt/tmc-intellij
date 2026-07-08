@@ -16,7 +16,7 @@ import fi.helsinki.cs.tmc.intellij.ui.submissionresult.SubmissionResultHandler;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.progress.util.ProgressWindow;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class UploadExerciseAction extends AnAction {
 
         new ButtonInputListener().receiveSubmit();
 
-        ProgressWindow window =
+        ProgressIndicator window =
                 ProgressWindowMaker.make(
                         "Uploading exercise, this may take several minutes",
                         project,
@@ -57,7 +57,7 @@ public class UploadExerciseAction extends AnAction {
     }
 
     private void callExerciseUploadService(
-            Project project, CoreProgressObserver observer, ProgressWindow window) {
+            Project project, CoreProgressObserver observer, ProgressIndicator window) {
 
         new ExerciseUploadingService()
                 .startUploadExercise(
