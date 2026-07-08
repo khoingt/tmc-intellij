@@ -12,23 +12,32 @@ import org.slf4j.LoggerFactory;
 public final class TmcSettingsManager {
 
     private static final Logger logger = LoggerFactory.getLogger(TmcSettingsManager.class);
-    private static final PersistentTmcSettings persistentSettings =
-            ServiceManager.getService(PersistentTmcSettings.class);
 
     private TmcSettingsManager() {}
 
+    private static PersistentTmcSettings persistentSettings;
+
+    private static synchronized PersistentTmcSettings ps() {
+        if (persistentSettings == null) {
+            persistentSettings = ServiceManager.getService(PersistentTmcSettings.class);
+        }
+        return persistentSettings;
+    }
+
     public static synchronized SettingsTmc get() {
         logger.info("Get SettingsTmc. @TmcSettingsManager.");
-        if (persistentSettings.getSettingsTmc() == null) {
-            persistentSettings.setSettingsTmc(new SettingsTmc());
+        PersistentTmcSettings p = ps();
+        if (p.getSettingsTmc() == null) {
+            p.setSettingsTmc(new SettingsTmc());
         }
-        return persistentSettings.getSettingsTmc();
+        return p.getSettingsTmc();
     }
 
     public static synchronized void setup() {
         logger.info("Setup SettingsTmc. @TmcSettingsManager.");
-        if (persistentSettings.getSettingsTmc() == null) {
-            persistentSettings.setSettingsTmc(new SettingsTmc());
+        PersistentTmcSettings p = ps();
+        if (p.getSettingsTmc() == null) {
+            p.setSettingsTmc(new SettingsTmc());
         }
     }
 }

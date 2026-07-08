@@ -12,23 +12,32 @@ import org.slf4j.LoggerFactory;
 public class ExerciseDatabaseManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ExerciseDatabaseManager.class);
-    private static final PersistentExerciseDatabase persistentExerciseDatabase =
-            ServiceManager.getService(PersistentExerciseDatabase.class);
 
     private ExerciseDatabaseManager() {}
 
+    private static PersistentExerciseDatabase persistentExerciseDatabase;
+
+    private static synchronized PersistentExerciseDatabase ped() {
+        if (persistentExerciseDatabase == null) {
+            persistentExerciseDatabase = ServiceManager.getService(PersistentExerciseDatabase.class);
+        }
+        return persistentExerciseDatabase;
+    }
+
     public static synchronized ExerciseDatabase get() {
         logger.info("Get ExerciseDatabase. @ExerciseDatabaseManager.");
-        if (persistentExerciseDatabase.getExerciseDatabase() == null) {
-            persistentExerciseDatabase.setExerciseDatabase(new ExerciseDatabase());
+        PersistentExerciseDatabase p = ped();
+        if (p.getExerciseDatabase() == null) {
+            p.setExerciseDatabase(new ExerciseDatabase());
         }
-        return persistentExerciseDatabase.getExerciseDatabase();
+        return p.getExerciseDatabase();
     }
 
     public static synchronized void setup() {
         logger.info("Setup ExerciseDatabase. @ExerciseDatabaseManager.");
-        if (persistentExerciseDatabase.getExerciseDatabase() == null) {
-            persistentExerciseDatabase.setExerciseDatabase(new ExerciseDatabase());
+        PersistentExerciseDatabase p = ped();
+        if (p.getExerciseDatabase() == null) {
+            p.setExerciseDatabase(new ExerciseDatabase());
         }
     }
 }
