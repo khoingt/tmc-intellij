@@ -19,13 +19,13 @@ public class PathResolver {
     private static final Logger logger = Logger.getInstance(PathResolver.class);
 
     public static String[] getCourseAndExerciseName(Project project) {
-        logger.info(
-                "Processing getCourseAndExerciseName" + " with Project parameter. @PathResolver");
+        logger.debug(
+                "Processing getCourseAndExerciseName with Project parameter. @PathResolver");
         return getCourseAndExerciseName(project.getBasePath());
     }
 
     public static String[] getCourseAndExerciseName(Path path) {
-        logger.info("Processing getCourseAndExerciseName" + " with Path parameter. @PathResolver");
+        logger.debug("Processing getCourseAndExerciseName with Path parameter. @PathResolver");
         return getCourseAndExerciseName(path.toString());
     }
 
@@ -35,8 +35,8 @@ public class PathResolver {
      * array and the exercise in the last one.
      */
     public static String[] getCourseAndExerciseName(String path) {
-        logger.info(
-                "Processing getCourseAndExerciseName " + "with String parameter. @PathResolver");
+        logger.debug(
+                "Processing getCourseAndExerciseName with String parameter. @PathResolver");
         if (path == null) {
             return null;
         }

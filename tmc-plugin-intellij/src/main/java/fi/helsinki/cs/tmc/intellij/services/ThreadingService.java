@@ -12,7 +12,7 @@ public class ThreadingService {
 
     public void runWithNotification(
             final Runnable run, Project project, ProgressIndicator progressWindow) {
-        logger.info("Processing runWithNotification. @ThreadingService");
+        logger.debug("Processing runWithNotification. @ThreadingService");
 
         ApplicationManager.getApplication()
                 .executeOnPooledThread(

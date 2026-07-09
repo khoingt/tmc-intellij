@@ -15,7 +15,7 @@ public class ProgressWindowMaker {
             boolean cancelable,
             boolean hidable,
             boolean indeterminate) {
-        logger.info("Creating progress window. @ProgressWindowMaker");
+        logger.debug("Creating progress window. @ProgressWindowMaker");
         ProgressIndicatorBase progressWindow = new ProgressIndicatorBase();
         progressWindow.setIndeterminate(indeterminate);
         progressWindow.setText(title);
