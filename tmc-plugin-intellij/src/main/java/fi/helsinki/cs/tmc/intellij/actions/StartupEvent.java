@@ -8,8 +8,6 @@ import fi.helsinki.cs.tmc.intellij.holders.TmcCoreHolder;
 import fi.helsinki.cs.tmc.intellij.holders.TmcSettingsManager;
 import fi.helsinki.cs.tmc.intellij.io.CoreProgressObserver;
 import fi.helsinki.cs.tmc.intellij.io.SettingsTmc;
-import fi.helsinki.cs.tmc.intellij.services.ProgressWindowMaker;
-import fi.helsinki.cs.tmc.intellij.services.ThreadingService;
 import fi.helsinki.cs.tmc.intellij.services.errors.ErrorMessageService;
 import fi.helsinki.cs.tmc.intellij.services.exercises.CheckForNewExercises;
 import fi.helsinki.cs.tmc.intellij.services.exercises.CourseAndExerciseManager;
@@ -22,6 +20,7 @@ import com.intellij.openapi.editor.actionSystem.EditorActionManager;
 import com.intellij.openapi.editor.actionSystem.TypedAction;
 import com.intellij.openapi.editor.actionSystem.TypedActionHandler;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.ProjectActivity;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -49,54 +48,47 @@ public class StartupEvent implements ProjectActivity {
 
         ExerciseDatabaseManager.setup();
 
-        ThreadingService threadingService = new ThreadingService();
-
-        ProgressIndicator progressWindow =
-                ProgressWindowMaker.make(
-                        "Running TMC startup actions.", project, false, false, false);
-
-        CoreProgressObserver observer = new CoreProgressObserver(progressWindow);
         new ErrorMessageService()
                 .showInfoBalloon(
                         "The Test My Code Plugin for Intellij is in BETA and"
                                 + " may not work properly. Use at your own risk. ");
 
-        threadingService.runWithNotification(
-                new Thread(
-                        () -> {
-                            setupLoggers(observer);
-                            setupTmcSettings(observer);
-                            CheckForOneDrive.run();
-                            setupCoreHolder(observer);
-                            setupSnapshots(observer, project);
-                            setupDatabase(observer);
-                            setupHandlersForSnapshots(observer);
+        new Task.Backgroundable(project, "Running TMC startup actions", false) {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                ProgressObserver observer = new CoreProgressObserver(indicator);
+                setupLoggers(observer);
+                setupTmcSettings(observer);
+                CheckForOneDrive.run();
+                setupCoreHolder(observer);
+                setupSnapshots(observer, project);
+                setupDatabase(observer);
+                setupHandlersForSnapshots(observer);
 
-                            if (TmcSettingsManager.get().getFirstRun()) {
-                                TmcSettingsManager.get().setFirstRun(false);
-                            } else {
-                                sendDiagnostics(observer);
-                            }
+                if (TmcSettingsManager.get().getFirstRun()) {
+                    TmcSettingsManager.get().setFirstRun(false);
+                } else {
+                    sendDiagnostics(observer);
+                }
 
-                            checkForNewExercises(observer);
+                checkForNewExercises(observer);
 
-                            ApplicationManager.getApplication()
-                                    .invokeLater(
-                                            () -> {
-                                                if (!project.isDisposed()) {
-                                                    ToolWindowManager toolWindowManager =
-                                                            ToolWindowManager.getInstance(project);
-                                                    if (toolWindowManager.getToolWindow("Project")
-                                                            != null) {
-                                                        toolWindowManager
-                                                                .getToolWindow("Project")
-                                                                .activate(() -> {});
-                                                    }
-                                                }
-                                            });
-                        }),
-                project,
-                progressWindow);
+                ApplicationManager.getApplication()
+                        .invokeLater(
+                                () -> {
+                                    if (!project.isDisposed()) {
+                                        ToolWindowManager toolWindowManager =
+                                                ToolWindowManager.getInstance(project);
+                                        if (toolWindowManager.getToolWindow("Project")
+                                                != null) {
+                                            toolWindowManager
+                                                    .getToolWindow("Project")
+                                                    .activate(() -> {});
+                                        }
+                                    }
+                                });
+            }
+        }.queue();
 
         showLoginWindow();
         return Unit.INSTANCE;
