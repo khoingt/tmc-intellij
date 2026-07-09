@@ -33,8 +33,18 @@ public class ObjectFinder {
 
     private static final Logger logger = Logger.getInstance(ObjectFinder.class);
 
+    private static final long CACHE_TTL_MS = 30_000;
+    private static Course cachedCourse;
+    private static String cachedSearchTerm;
+    private static String cachedTitleOrName;
+    private static long cachedTimestamp;
+
     @Nullable
     public Course findCourse(String searchTerm, String titleOrName) {
+        if (isCacheValid(searchTerm, titleOrName)) {
+            return cachedCourse;
+        }
+
         TmcCore core = TmcCoreHolder.get();
         List<Course> courses = getCourses(core);
 
@@ -44,9 +54,12 @@ public class ObjectFinder {
                 if ((titleOrName.equals("name") && c.getName().equals(searchTerm))
                         || (titleOrName.equals("title") && c.getTitle().equals(searchTerm))) {
                     try {
-                        logger.info("Trying to get course details from TmcCore. @ObjectFinder");
+                        logger.debug("Trying to get course details from TmcCore. @ObjectFinder");
 
-                        return core.getCourseDetails(ProgressObserver.NULL_OBSERVER, c).call();
+                        Course course =
+                                core.getCourseDetails(ProgressObserver.NULL_OBSERVER, c).call();
+                        updateCache(searchTerm, titleOrName, course);
+                        return course;
                     } catch (TmcCoreException exception) {
                         logger.warn(
                                 "Could not find course. @ObjectFinder",
@@ -63,6 +76,20 @@ public class ObjectFinder {
         }
 
         return null;
+    }
+
+    private static boolean isCacheValid(String searchTerm, String titleOrName) {
+        return cachedCourse != null
+                && cachedSearchTerm != null && cachedSearchTerm.equals(searchTerm)
+                && cachedTitleOrName != null && cachedTitleOrName.equals(titleOrName)
+                && (System.currentTimeMillis() - cachedTimestamp) < CACHE_TTL_MS;
+    }
+
+    private static void updateCache(String searchTerm, String titleOrName, Course course) {
+        cachedCourse = course;
+        cachedSearchTerm = searchTerm;
+        cachedTitleOrName = titleOrName;
+        cachedTimestamp = System.currentTimeMillis();
     }
 
     @TestOnly
@@ -88,7 +115,7 @@ public class ObjectFinder {
     }
 
     private List<Course> getCourses(TmcCore core) {
-        logger.info("Processing getCourses @ObjectFinder");
+        logger.debug("Processing getCourses @ObjectFinder");
         List<Course> courses = null;
 
         try {
@@ -114,7 +141,7 @@ public class ObjectFinder {
     }
 
     public List<String> listAllDownloadedCourses() {
-        logger.info("Processing listAllDownloadedCourses. @ObjectFinder");
+        logger.debug("Processing listAllDownloadedCourses. @ObjectFinder");
         List<String> courseTitles = new ArrayList<>();
 
         if (getCourses(TmcCoreHolder.get())
@@ -138,7 +165,7 @@ public class ObjectFinder {
     }
 
     public List<String> listAllDownloadedExercises(String courseTitle) {
-        logger.info(
+        logger.debug(
                 "Processing listAllDownloadedExercises from course " + courseTitle + ". @ObjectFinder");
         if (findCourse(courseTitle, "title") == null) {
             return new ArrayList<>();
@@ -150,12 +177,12 @@ public class ObjectFinder {
     }
 
     private List<String> getListOfDirectoriesInPath(String folderPath) {
-        logger.info("Processing getListOfDirectoriesInPath. @ObjectFinder");
+        logger.debug("Processing getListOfDirectoriesInPath. @ObjectFinder");
         List<String> fileNames = new ArrayList<>();
 
         try (DirectoryStream<Path> directoryStream =
                 Files.newDirectoryStream(Paths.get(folderPath))) {
-            logger.info("Getting list of directories in path. @ObjectFinder");
+            logger.debug("Getting list of directories in path. @ObjectFinder");
             addExercisesToList(fileNames, directoryStream);
         } catch (Exception ex) {
             logger.warn(
@@ -178,22 +205,22 @@ public class ObjectFinder {
             String[] courseAndExerciseNameArray = PathResolver.getCourseAndExerciseName(path);
             if (courseAndExerciseNameArray == null
                     || getExerciseName(courseAndExerciseNameArray).charAt(0) == '.') {
-                logger.info("exerciseCourse variable = null. @ObjectFinder");
+                    logger.debug("exerciseCourse variable = null. @ObjectFinder");
                 continue;
             }
-            logger.info(
+            logger.debug(
                     "Adding exercise to list. @ObjectFinder");
             fileNames.add(getExerciseName(courseAndExerciseNameArray));
         }
     }
 
     private String getExerciseName(String[] courseAndExerciseName) {
-        logger.info("Trying to getExerciseName. @ObjectFinder");
+        logger.debug("Trying to getExerciseName. @ObjectFinder");
         return courseAndExerciseName[courseAndExerciseName.length - 1];
     }
 
     public Project findCurrentProject() {
-        logger.info("Trying to findCurrentProject. @ObjectFinder");
+        logger.debug("Trying to findCurrentProject. @ObjectFinder");
         DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
 
         if (dataContext == null) {
