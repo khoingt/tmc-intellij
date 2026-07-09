@@ -23,8 +23,11 @@ import fi.helsinki.cs.tmc.intellij.ui.testresults.TestResultPanelFactory;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.openapi.ui.Messages;
+import org.jetbrains.annotations.NotNull;
 
 import com.intellij.openapi.diagnostic.Logger;
 
@@ -40,11 +43,7 @@ public class ExerciseUploadingService {
             CheckForExistingExercises checker,
             SubmissionResultHandler handler,
             SettingsTmc settings,
-            CourseAndExerciseManager courseAndExerciseManager,
-            ThreadingService threadingService,
-            TestRunningService testRunningService,
-            CoreProgressObserver observer,
-            ProgressIndicator window) {
+            CourseAndExerciseManager courseAndExerciseManager) {
 
         logger.info("Starting to upload an exercise. @ExerciseUploadingService");
 
@@ -77,11 +76,75 @@ public class ExerciseUploadingService {
                     exercise,
                     core,
                     handler,
-                    threadingService,
-                    testRunningService,
-                    finder,
-                    observer,
+                    finder);
+            ToolWindowManager.getInstance(project).getToolWindow("TMC Test Results").show();
+            ToolWindowManager.getInstance(project).getToolWindow("TMC Test Results").activate(() -> {});
+            courseAndExerciseManager.updateSingleCourse(
+                    course.getTitle(), checker, finder, settings);
+        }
+    }
+
+    public void startUploadExercise(
+            Project project,
+            TmcCore core,
+            ObjectFinder finder,
+            CheckForExistingExercises checker,
+            SubmissionResultHandler handler,
+            SettingsTmc settings,
+            CourseAndExerciseManager courseAndExerciseManager,
+            ThreadingService threadingService,
+            TestRunningService testRunningService,
+            CoreProgressObserver observer,
+            ProgressIndicator window) {
+
+        logger.info("Starting to upload an exercise (full signature). @ExerciseUploadingService");
+
+        String[] exerciseCourse = PathResolver.getCourseAndExerciseName(project);
+        Course course = finder.findCourse(getCourseName(exerciseCourse), "name");
+
+        if (!courseAndExerciseManager.isCourseInDatabase(course.getTitle())) {
+            Messages.showErrorDialog(project, "Project not identified as TMC exercise", "Error");
+            return;
+        }
+
+        Exercise exercise =
+                courseAndExerciseManager.getExercise(
+                        course.getTitle(), getExerciseName(exerciseCourse));
+
+        if (!settings.getToken().isPresent()) {
+            LoginDialog.display();
+        } else if (exercise == null) {
+            logger.warn("Failed to submit an exercise that was null. @ExerciseUploadingService");
+            ErrorMessageService error = new ErrorMessageService();
+            error.showErrorMessagePopup(
+                    "Failed to submit exercise.\nPlease check your internet connection.");
+
+        } else if (exercise.hasDeadlinePassed()) {
+            logger.warn("Exercise has expired. @ExerciseUploadingService");
+            Messages.showErrorDialog(project, "The deadline for this exercise has passed", "Error");
+        } else {
+            threadingService.runWithNotification(
+                    () -> {
+                        try {
+                            getSubmissionResult(core, observer, exercise, handler, project);
+                        } catch (TmcCoreException exception) {
+                            logger.warn(
+                                    "Could not getExercise submission results. "
+                                            + "@ExerciseUploadingService",
+                                    exception);
+                            exception.printStackTrace();
+                            new ErrorMessageService().showHumanReadableErrorMessage(exception, true);
+                        } catch (Exception exception) {
+                            logger.warn(
+                                    "Could not getExercise submission results. "
+                                            + "@ExerciseUploadingService",
+                            exception);
+                            exception.printStackTrace();
+                        }
+                    },
+                    project,
                     window);
+            testRunningService.displayTestWindow(finder);
             courseAndExerciseManager.updateSingleCourse(
                     course.getTitle(), checker, finder, settings);
         }
@@ -92,37 +155,32 @@ public class ExerciseUploadingService {
             final Exercise exercise,
             final TmcCore core,
             final SubmissionResultHandler handler,
-            ThreadingService threadingService,
-            TestRunningService testRunningService,
-            ObjectFinder finder,
-            CoreProgressObserver observer,
-            ProgressIndicator window) {
+            ObjectFinder finder) {
 
-        logger.info("Calling for threadingService from getResult. @ExerciseUploadingService.");
+        logger.info("Submitting exercise via Task.Backgroundable. @ExerciseUploadingService.");
 
-        threadingService.runWithNotification(
-                () -> {
-                    try {
-                        getSubmissionResult(core, observer, exercise, handler, project);
-                    } catch (TmcCoreException exception) {
-                        logger.warn(
-                                "Could not getExercise submission results. "
-                                        + "@ExerciseUploadingService",
-                                exception);
-                        exception.printStackTrace();
-
-                        new ErrorMessageService().showHumanReadableErrorMessage(exception, true);
-                    } catch (Exception exception) {
-                        logger.warn(
-                                "Could not getExercise submission results. "
-                                        + "@ExerciseUploadingService",
-                                exception);
-                        exception.printStackTrace();
-                    }
-                },
-                project,
-                window);
-        testRunningService.displayTestWindow(finder);
+        new Task.Backgroundable(project, "Uploading exercise", true) {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                CoreProgressObserver observer = new CoreProgressObserver(indicator);
+                try {
+                    getSubmissionResult(core, observer, exercise, handler, project);
+                } catch (TmcCoreException exception) {
+                    logger.warn(
+                            "Could not getExercise submission results. "
+                                    + "@ExerciseUploadingService",
+                            exception);
+                    exception.printStackTrace();
+                    new ErrorMessageService().showHumanReadableErrorMessage(exception, true);
+                } catch (Exception exception) {
+                    logger.warn(
+                            "Could not getExercise submission results. "
+                                    + "@ExerciseUploadingService",
+                            exception);
+                    exception.printStackTrace();
+                }
+            }
+        }.queue();
     }
 
     private void getSubmissionResult(
