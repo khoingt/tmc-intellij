@@ -11,12 +11,11 @@ import com.intellij.openapi.roots.ProjectRootManager;
 
 import org.jetbrains.annotations.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 public class RunProjectAction extends AnAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(RunProjectAction.class);
+    private static final Logger logger = Logger.getInstance(RunProjectAction.class);
 
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {

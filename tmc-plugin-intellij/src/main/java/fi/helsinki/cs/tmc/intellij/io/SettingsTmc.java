@@ -13,8 +13,7 @@ import com.intellij.openapi.application.ApplicationInfo;
 import fi.helsinki.cs.tmc.core.domain.Organization;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.File;
 import java.io.Serializable;
@@ -26,7 +25,7 @@ import javax.swing.JFileChooser;
 /** TMC Settings component from Core, has all the necessary settings. */
 public class SettingsTmc implements TmcSettings, Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(SettingsTmc.class);
+    private static final Logger logger = Logger.getInstance(SettingsTmc.class);
     @Property private String username;
     @Property private String password;
     @Property private Course course;
@@ -73,7 +72,7 @@ public class SettingsTmc implements TmcSettings, Serializable {
     }
 
     public void setUsername(String username) {
-        logger.info("Setting username -> {}. @SettingsTmc", username);
+        logger.info("Setting username -> " + username + ". @SettingsTmc");
         if (username.trim().equals("")) {
             this.username = null;
         }
@@ -89,7 +88,7 @@ public class SettingsTmc implements TmcSettings, Serializable {
     }
 
     public String getCourseName() {
-        logger.info("Getting course name <- {}. @SettingsTmc", course.getTitle());
+        logger.info("Getting course name <- " + course.getTitle() + ". @SettingsTmc");
         if (course != null) {
             return course.getTitle();
         }
@@ -97,17 +96,17 @@ public class SettingsTmc implements TmcSettings, Serializable {
     }
 
     public void setServerAddress(String serverAddress) {
-        logger.info("Setting server address -> {}. @SettingsTmc", serverAddress);
+        logger.info("Setting server address -> " + serverAddress + ". @SettingsTmc");
         this.serverAddress = serverAddress;
     }
 
     public String getProjectBasePath() {
-        logger.info("Getting project base path <- {}. @SettingsTmc", projectBasePath);
+        logger.info("Getting project base path <- " + projectBasePath + ". @SettingsTmc");
         return projectBasePath;
     }
 
     public void setProjectBasePath(String projectBasePath) {
-        logger.info("Setting project base path -> {}. @SettingsTmc", projectBasePath);
+        logger.info("Setting project base path -> " + projectBasePath + ". @SettingsTmc");
         if (projectBasePath.contains("TMCProjects")) {
             this.projectBasePath = projectBasePath;
         } else {
@@ -117,7 +116,7 @@ public class SettingsTmc implements TmcSettings, Serializable {
 
     @Override
     public String getServerAddress() {
-        logger.info("Getting server address <- {}. @SettingsTmc", serverAddress);
+        logger.info("Getting server address <- " + serverAddress + ". @SettingsTmc");
         return serverAddress;
     }
 
@@ -138,7 +137,7 @@ public class SettingsTmc implements TmcSettings, Serializable {
 
     @Override
     public Optional<String> getUsername() {
-        logger.info("Getting username <- {}. @SettingsTmc", username);
+        logger.info("Getting username <- " + username + ". @SettingsTmc");
         return Optional.fromNullable(username);
     }
 
@@ -150,7 +149,7 @@ public class SettingsTmc implements TmcSettings, Serializable {
 
     @Override
     public Optional<Course> getCurrentCourse() {
-        logger.info("Getting current course <- {}. @SettingsTmc", course);
+        logger.info("Getting current course <- " + course + ". @SettingsTmc");
         return Optional.fromNullable(course);
     }
 
@@ -183,7 +182,7 @@ public class SettingsTmc implements TmcSettings, Serializable {
 
     @Override
     public void setCourse(Optional<Course> course) {
-        logger.info("Setting course -> {}. @SettingsTmc", course);
+        logger.info("Setting course -> " + course + ". @SettingsTmc");
         this.course = course.orNull();
     }
 
@@ -223,14 +222,14 @@ public class SettingsTmc implements TmcSettings, Serializable {
 
     @Override
     public Optional<Organization> getOrganization() {
-        logger.info("Getting organization <- {}", organization);
+        logger.info("Getting organization <- " + organization);
         return Optional.fromNullable(this.organization);
     }
 
     @Override
     public void setOrganization(Optional<Organization> org) {
         if (org.isPresent()) {
-            logger.info("Setting organization -> {}", org.get().getName());
+            logger.info("Setting organization -> " + org.get().getName());
         }
         this.organization = org.orNull();
     }

@@ -15,8 +15,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.Messages;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,7 +24,7 @@ import java.nio.file.Paths;
 /** Opens the project using intellij ProjectManager, when given the path. */
 public class ProjectOpener {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectOpener.class);
+    private static final Logger logger = Logger.getInstance(ProjectOpener.class);
 
     public void openProject(String path, String courseName) {
         Course course = new ObjectFinder().findCourse(courseName, "name");
@@ -38,7 +37,7 @@ public class ProjectOpener {
     }
 
     public void openProject(Project project, String path) {
-        logger.info("Opening project from {}. @ProjectOpener", path);
+        logger.info("Opening project from " + path + ". @ProjectOpener");
         if (Files.isDirectory(Paths.get(path))) {
             if (project == null || !path.equals(project.getBasePath())) {
                 try {
@@ -58,8 +57,7 @@ public class ProjectOpener {
                 } catch (Exception exception) {
                     logger.warn(
                             "Could not open project from path. @ProjectOpener",
-                            exception,
-                            exception.getStackTrace());
+                            exception);
                     new ErrorMessageService()
                             .showErrorMessageWithExceptionDetails(
                                     exception, "Could not open project from path. " + path, true);

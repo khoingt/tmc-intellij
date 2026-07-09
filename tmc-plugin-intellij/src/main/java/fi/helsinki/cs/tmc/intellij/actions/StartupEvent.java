@@ -31,8 +31,7 @@ import kotlin.coroutines.Continuation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 
 /**
@@ -41,13 +40,13 @@ import org.slf4j.LoggerFactory;
  */
 public class StartupEvent implements ProjectActivity {
 
-    private static final Logger logger = LoggerFactory.getLogger(StartupEvent.class);
+    private static final Logger logger = Logger.getInstance(StartupEvent.class);
 
     @Nullable
     @Override
     public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
 
-        logger.info("Opening project {} and running startup actions. @StartupEvent", project);
+        logger.info("Opening project " + project + " and running startup actions. @StartupEvent");
 
         ExerciseDatabaseManager.setup();
 

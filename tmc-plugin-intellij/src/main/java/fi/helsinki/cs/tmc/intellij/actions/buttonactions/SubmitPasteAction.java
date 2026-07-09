@@ -8,8 +8,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 /**
  * Defined in plugin.xml on line &lt;action id="Submit to Pastebin"
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SubmitPasteAction extends AnAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(SubmitPasteAction.class);
+    private static final Logger logger = Logger.getInstance(SubmitPasteAction.class);
     private PasteService pasteService;
 
     @Override

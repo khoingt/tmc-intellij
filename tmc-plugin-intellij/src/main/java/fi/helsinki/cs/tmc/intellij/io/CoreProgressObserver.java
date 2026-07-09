@@ -4,13 +4,12 @@ import fi.helsinki.cs.tmc.core.domain.ProgressObserver;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 public class CoreProgressObserver extends ProgressObserver {
 
     private final ProgressIndicator progressWindow;
-    private static final Logger logger = LoggerFactory.getLogger(CoreProgressObserver.class);
+    private static final Logger logger = Logger.getInstance(CoreProgressObserver.class);
 
     public CoreProgressObserver(ProgressIndicator progressWindow) {
         this.progressWindow = progressWindow;

@@ -14,12 +14,11 @@ import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 public class ProjectExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectExecutor.class);
+    private static final Logger logger = Logger.getInstance(ProjectExecutor.class);
 
     public ProjectExecutor() {
         logger.info("ProjectExecutor initialized.");

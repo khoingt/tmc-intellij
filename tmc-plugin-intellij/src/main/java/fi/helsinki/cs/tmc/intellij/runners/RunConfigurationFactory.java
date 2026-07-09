@@ -18,12 +18,11 @@ import com.intellij.psi.search.GlobalSearchScope;
 
 import org.jetbrains.annotations.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 public class RunConfigurationFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(RunConfigurationFactory.class);
+    private static final Logger logger = Logger.getInstance(RunConfigurationFactory.class);
 
     private final RunManager runManager;
     private final Module module;

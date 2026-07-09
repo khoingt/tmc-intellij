@@ -5,13 +5,12 @@ import fi.helsinki.cs.tmc.intellij.services.persistence.PersistentExerciseDataba
 
 import com.intellij.openapi.components.ServiceManager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 /** Contains the ExerciseDatabase. */
 public class ExerciseDatabaseManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExerciseDatabaseManager.class);
+    private static final Logger logger = Logger.getInstance(ExerciseDatabaseManager.class);
 
     private ExerciseDatabaseManager() {}
 

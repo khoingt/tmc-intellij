@@ -1,13 +1,12 @@
 package fi.helsinki.cs.tmc.intellij.importexercise;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.File;
 import java.util.Set;
 
 public class JavaProjectDescriptor {
-    private static final Logger logger = LoggerFactory.getLogger(JavaProjectDescriptor.class);
+    private static final Logger logger = Logger.getInstance(JavaProjectDescriptor.class);
 
     public static ProjectDescriptor create(String path, Set<String> ignoredNames) {
         logger.info("Starting to create Project Descriptor in JavaProjectDescriptor.");

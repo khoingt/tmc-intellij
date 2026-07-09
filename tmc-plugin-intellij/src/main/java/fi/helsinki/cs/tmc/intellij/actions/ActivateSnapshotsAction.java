@@ -13,8 +13,7 @@ import com.intellij.openapi.editor.event.DocumentListener;
 
 import org.jetbrains.annotations.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class ActivateSnapshotsAction implements TypedActionHandler {
 
     private static final List<Document> listenedDocuments = new ArrayList<>();
 
-    private static final Logger logger = LoggerFactory.getLogger(ActivateSnapshotsAction.class);
+    private static final Logger logger = Logger.getInstance(ActivateSnapshotsAction.class);
 
     public ActivateSnapshotsAction(TypedActionHandler originalHandler) {
         handler = originalHandler;
@@ -42,7 +41,7 @@ public class ActivateSnapshotsAction implements TypedActionHandler {
             DocumentListener docl = new TextInputListener();
             editor.getDocument().addDocumentListener(docl);
             listenedDocuments.add(editor.getDocument());
-            logger.info("Added document listener to ", editor.getDocument().toString());
+            logger.info("Added document listener to " + editor.getDocument().toString());
 //            UsagesCollector.doPersistProjectUsages(new ObjectFinder().findCurrentProject());
             // the above line does not work with the new intellij (v2017.3). has it ever been necessary??
         }

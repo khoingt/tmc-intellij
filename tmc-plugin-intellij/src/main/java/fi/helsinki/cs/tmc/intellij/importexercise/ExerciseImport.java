@@ -1,7 +1,6 @@
 package fi.helsinki.cs.tmc.intellij.importexercise;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.File;
 
@@ -9,7 +8,7 @@ import java.io.File;
  * Class handles as main tool for imports
  */
 public class ExerciseImport {
-    private static final Logger logger = LoggerFactory.getLogger(NewProjectUtilModified.class);
+    private static final Logger logger = Logger.getInstance(NewProjectUtilModified.class);
     /*
      * Handles Exercise import also possibly decides what to import in future.
      * @param path project root dir
@@ -22,7 +21,7 @@ public class ExerciseImport {
                 NewProjectUtilModified.importExercise(path);
                 return true;
             } catch (Exception e) {
-                logger.warn("{} @ExerciseImport.importExercise", e);
+                logger.warn("@ExerciseImport.importExercise", e);
             }
         }
         return false;

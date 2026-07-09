@@ -3,12 +3,11 @@ package fi.helsinki.cs.tmc.intellij.runners;
 import com.intellij.execution.RunManager;
 import com.intellij.ide.util.TreeClassChooser;
 import com.intellij.openapi.module.Module;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 public class RunProject {
 
-    private static final Logger logger = LoggerFactory.getLogger(RunProject.class);
+    private static final Logger logger = Logger.getInstance(RunProject.class);
 
     private final RunConfigurationFactory factory;
 

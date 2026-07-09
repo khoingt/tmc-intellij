@@ -19,8 +19,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 /**
  * Uploads the currently active project to TMC Server Defined in plugin.xml on the line &lt;action
@@ -31,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UploadExerciseAction extends AnAction {
 
-    private static final Logger logger = LoggerFactory.getLogger(UploadExerciseAction.class);
+    private static final Logger logger = Logger.getInstance(UploadExerciseAction.class);
 
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
