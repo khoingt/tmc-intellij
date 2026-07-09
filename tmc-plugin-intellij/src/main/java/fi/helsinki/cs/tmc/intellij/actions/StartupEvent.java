@@ -17,6 +17,7 @@ import fi.helsinki.cs.tmc.intellij.services.logging.PropertySetter;
 import fi.helsinki.cs.tmc.intellij.snapshots.ActivateSnapshotsListeners;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.actionSystem.EditorActionManager;
 import com.intellij.openapi.editor.actionSystem.TypedAction;
 import com.intellij.openapi.editor.actionSystem.TypedActionHandler;
@@ -31,8 +32,6 @@ import kotlin.coroutines.Continuation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.intellij.openapi.diagnostic.Logger;
-
 
 /**
  * The actions to be executed on project startup defined in plugin.xml exercises group on line
@@ -46,7 +45,7 @@ public class StartupEvent implements ProjectActivity {
     @Override
     public Object execute(@NotNull Project project, @NotNull Continuation<? super Unit> continuation) {
 
-        logger.info("Opening project " + project + " and running startup actions. @StartupEvent");
+        logger.debug("Opening project " + project + " and running startup actions. @StartupEvent");
 
         ExerciseDatabaseManager.setup();
 
@@ -84,20 +83,15 @@ public class StartupEvent implements ProjectActivity {
                             ApplicationManager.getApplication()
                                     .invokeLater(
                                             () -> {
-                                                while (project.isDisposed()) {
-                                                    try {
-                                                        Thread.sleep(5);
-                                                    } catch (Exception e) {
-
-                                                    }
-                                                }
-
-                                                if (ToolWindowManager.getInstance(project)
+                                                if (!project.isDisposed()) {
+                                                    ToolWindowManager toolWindowManager =
+                                                            ToolWindowManager.getInstance(project);
+                                                    if (toolWindowManager.getToolWindow("Project")
+                                                            != null) {
+                                                        toolWindowManager
                                                                 .getToolWindow("Project")
-                                                        != null) {
-                                                    ToolWindowManager.getInstance(project)
-                                                            .getToolWindow("Project")
-                                                            .activate(() -> {});
+                                                                .activate(() -> {});
+                                                    }
                                                 }
                                             });
                         }),
@@ -187,9 +181,17 @@ public class StartupEvent implements ProjectActivity {
     private void showLoginWindow() {
         SettingsTmc settingsTmc = TmcSettingsManager.get();
         if (settingsTmc.getPassword().isPresent()) {
-            this.tryToMigratePasswordToOAuthToken();
-        }
-        if (!settingsTmc.getToken().isPresent() || settingsTmc.getServerAddress().isEmpty()) {
+            ApplicationManager.getApplication().executeOnPooledThread(() -> {
+                this.tryToMigratePasswordToOAuthToken();
+                ApplicationManager.getApplication().invokeLater(() -> {
+                    if (!settingsTmc.getToken().isPresent()
+                            || settingsTmc.getServerAddress().isEmpty()) {
+                        LoginDialog.display();
+                    }
+                });
+            });
+        } else if (!settingsTmc.getToken().isPresent()
+                || settingsTmc.getServerAddress().isEmpty()) {
             LoginDialog.display();
         }
     }
