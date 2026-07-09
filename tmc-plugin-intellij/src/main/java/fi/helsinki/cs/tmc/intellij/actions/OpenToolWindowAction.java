@@ -12,10 +12,8 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 
+import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Defined in plugin.xml in actions group on line &lt;action id="Open TMC Exercise List"
@@ -27,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OpenToolWindowAction extends AnAction implements ToolWindowFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(OpenToolWindowAction.class);
+    private static final Logger logger = Logger.getInstance(OpenToolWindowAction.class);
 
     public void actionPerformed(AnActionEvent anActionEvent) {
         logger.info("Performing OpenToolWindowAction. @OpenToolWindowAction");
