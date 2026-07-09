@@ -8,8 +8,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 
 import org.jetbrains.annotations.Nullable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 
 /**
@@ -25,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class PersistentExerciseDatabase implements
         PersistentStateComponent<PersistentExerciseDatabase> {
 
-    private static final Logger logger = LoggerFactory.getLogger(PersistentExerciseDatabase.class);
+    private static final Logger logger = Logger.getInstance(PersistentExerciseDatabase.class);
 
     private ExerciseDatabase exerciseDatabase;
 

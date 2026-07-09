@@ -13,14 +13,13 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 
 import fi.helsinki.cs.tmc.intellij.services.persistence.PersistentTmcSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.util.List;
 
 public class NextExerciseFetcher {
 
-    private static final Logger logger = LoggerFactory.getLogger(NextExerciseFetcher.class);
+    private static final Logger logger = Logger.getInstance(NextExerciseFetcher.class);
     private final String course;
     private final Project project;
     private Exercise exercise;

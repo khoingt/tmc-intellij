@@ -11,8 +11,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 
 import org.jetbrains.annotations.Nullable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 /**
  * Uses the IDE to save settings on disk
@@ -28,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class PersistentTmcSettings implements PersistentStateComponent<PersistentTmcSettings> {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(PersistentTmcSettings.class);
+    private static final Logger logger = Logger.getInstance(PersistentTmcSettings.class);
     private SettingsTmc settingsTmc;
 
     @Nullable

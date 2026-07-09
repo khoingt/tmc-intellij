@@ -13,8 +13,7 @@ import fi.helsinki.cs.tmc.intellij.ui.projectlist.ProjectListManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.net.URI;
 
@@ -23,7 +22,7 @@ public class PasteService {
     private PasteWindow window;
     private Exercise exercise;
     private TmcCore core;
-    private static final Logger logger = LoggerFactory.getLogger(PasteService.class);
+    private static final Logger logger = Logger.getInstance(PasteService.class);
 
     public void showSubmitForm(Project project, TmcCore core) {
         logger.info("Opening paste submit form. @PasteService");
@@ -81,14 +80,12 @@ public class PasteService {
                             } catch (TmcCoreException exception) {
                                 logger.info(
                                         "Uploading to pastebin failed. @PasteService",
-                                        exception,
-                                        exception.getStackTrace());
+                                        exception);
                                 handleException(exception);
                             } catch (Exception exception) {
-                                logger.info(
-                                        "Uploading to pastebin failed. @PasteService",
-                                        exception,
-                                        exception.getStackTrace());
+                            logger.info(
+                                    "Uploading to pastebin failed. @PasteService",
+                                    exception);
                                 new ErrorMessageService()
                                         .showErrorMessageWithExceptionDetails(
                                                 exception,

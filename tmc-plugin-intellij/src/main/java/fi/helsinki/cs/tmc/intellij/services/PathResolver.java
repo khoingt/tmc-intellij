@@ -7,8 +7,7 @@ import fi.helsinki.cs.tmc.intellij.services.exercises.CourseAndExerciseManager;
 
 import com.intellij.openapi.project.Project;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.nio.file.Path;
 
@@ -17,7 +16,7 @@ import java.nio.file.Path;
  */
 public class PathResolver {
 
-    private static final Logger logger = LoggerFactory.getLogger(PathResolver.class);
+    private static final Logger logger = Logger.getInstance(PathResolver.class);
 
     public static String[] getCourseAndExerciseName(Project project) {
         logger.info(

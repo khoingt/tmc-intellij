@@ -2,8 +2,7 @@ package fi.helsinki.cs.tmc.intellij.services.persistence;
 
 import fi.helsinki.cs.tmc.core.domain.Exercise;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import java.util.Map;
 /** Controls the courses. Used by to set and get the course map. */
 public class ExerciseDatabase implements Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExerciseDatabase.class);
+    private static final Logger logger = Logger.getInstance(ExerciseDatabase.class);
     private Map<String, List<Exercise>> courses;
 
     public ExerciseDatabase() {

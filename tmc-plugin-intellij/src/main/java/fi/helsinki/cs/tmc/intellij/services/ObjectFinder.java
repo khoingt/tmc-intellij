@@ -17,8 +17,7 @@ import com.intellij.openapi.project.ProjectManager;
 
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.File;
 import java.nio.file.DirectoryStream;
@@ -32,7 +31,7 @@ import java.util.List;
 /** Finds various exercises and courses from the disk or by asking the TMCServer. */
 public class ObjectFinder {
 
-    private static final Logger logger = LoggerFactory.getLogger(ObjectFinder.class);
+    private static final Logger logger = Logger.getInstance(ObjectFinder.class);
 
     @Nullable
     public Course findCourse(String searchTerm, String titleOrName) {
@@ -45,17 +44,16 @@ public class ObjectFinder {
                 if ((titleOrName.equals("name") && c.getName().equals(searchTerm))
                         || (titleOrName.equals("title") && c.getTitle().equals(searchTerm))) {
                     try {
-                        logger.info("Trying to get course details from TmcCore. @ObjectFinder", c);
+                        logger.info("Trying to get course details from TmcCore. @ObjectFinder");
 
                         return core.getCourseDetails(ProgressObserver.NULL_OBSERVER, c).call();
                     } catch (TmcCoreException exception) {
                         logger.warn(
                                 "Could not find course. @ObjectFinder",
-                                exception,
-                                exception.getStackTrace());
+                                exception);
                         new ErrorMessageService().showHumanReadableErrorMessage(exception, false);
                     } catch (Exception e) {
-                        logger.warn("Could not find course. @ObjectFinder", e, e.getStackTrace());
+                        logger.warn("Could not find course. @ObjectFinder", e);
                         new ErrorMessageService()
                                 .showErrorMessageWithExceptionDetails(
                                         e, "Could not find course.", true);
@@ -98,16 +96,15 @@ public class ObjectFinder {
         } catch (ShowToUserException exception) {
             logger.warn(
                 "Failed to fetch courses from TmcCore. @ObjectFinder",
-                exception,
-                exception.getStackTrace());
+                exception);
             ErrorMessageService error = new ErrorMessageService();
             error.showErrorMessagePopup(
                 "Failed to fetch courses from the server.\nPlease check your internet connection.");
         } catch (TmcCoreException e) {
-            logger.warn("Getting courses failed @ObjectFinder", e, e.getStackTrace());
+            logger.warn("Getting courses failed @ObjectFinder", e);
             new ErrorMessageService().showHumanReadableErrorMessage(e, false);
         } catch (Exception e) {
-            logger.warn("Getting courses failed @ObjectFinder", e, e.getStackTrace());
+            logger.warn("Getting courses failed @ObjectFinder", e);
             new ErrorMessageService()
                     .showErrorMessageWithExceptionDetails(
                             e, "Something went wrong while trying to get the course list", true);
@@ -142,7 +139,7 @@ public class ObjectFinder {
 
     public List<String> listAllDownloadedExercises(String courseTitle) {
         logger.info(
-                "Processing listAllDownloadedExercises from course {}. @ObjectFinder", courseTitle);
+                "Processing listAllDownloadedExercises from course " + courseTitle + ". @ObjectFinder");
         if (findCourse(courseTitle, "title") == null) {
             return new ArrayList<>();
         }
@@ -163,8 +160,7 @@ public class ObjectFinder {
         } catch (Exception ex) {
             logger.warn(
                     "Could not get list of directories in path. @ObjectFinder",
-                    ex,
-                    ex.getStackTrace());
+                    ex);
             ex.printStackTrace();
         }
         Collections.sort(fileNames);
@@ -186,8 +182,7 @@ public class ObjectFinder {
                 continue;
             }
             logger.info(
-                    "Adding exercise to list. @ObjectFinder",
-                    getExerciseName(courseAndExerciseNameArray));
+                    "Adding exercise to list. @ObjectFinder");
             fileNames.add(getExerciseName(courseAndExerciseNameArray));
         }
     }

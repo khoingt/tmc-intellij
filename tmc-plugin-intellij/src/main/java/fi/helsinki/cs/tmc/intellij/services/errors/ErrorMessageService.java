@@ -13,8 +13,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import javax.swing.Icon;
 
@@ -34,7 +33,7 @@ public class ErrorMessageService {
             true
     );
 
-    private static final Logger logger = LoggerFactory.getLogger(ErrorMessageService.class);
+    private static final Logger logger = Logger.getInstance(ErrorMessageService.class);
 
     public void showInfoBalloon(String message) {
         showBalloonNotification(message, NotificationType.INFORMATION);
@@ -74,7 +73,7 @@ public class ErrorMessageService {
      * @param showAsPopup if the error message will be a pop up or not.
      */
     public void showHumanReadableErrorMessage(TmcCoreException coreException, boolean showAsPopup) {
-        logger.info("Showing human readable TmcCoreException. {} @ErrorMessageService", coreException);
+        logger.info("Showing human readable TmcCoreException. @ErrorMessageService", coreException);
         PresentableErrorMessage content = PresentableErrorMessage.forTmcException(coreException);
         showNotification(content.getMessage(), content.getMessageType(), showAsPopup);
     }
@@ -89,13 +88,13 @@ public class ErrorMessageService {
     public void showErrorMessageWithExceptionDetails(Exception exception,
                                                      String errorDescription,
                                                      boolean showAsPopup) {
-        logger.info("Showing Exception. {} @ErrorMessageService", exception);
+        logger.info("Showing Exception. @ErrorMessageService", exception);
         String message = exception + ". \n" + errorDescription;
         showNotification(message, NotificationType.ERROR, showAsPopup);
     }
 
     public void showErrorMessagePopup(String errorMessage) {
-        logger.info("Showing error message: {}. @ErrorMessageService", errorMessage);
+        logger.info("Showing error message: " + errorMessage + ". @ErrorMessageService");
         showNotification(errorMessage, NotificationType.ERROR, true);
     }
 

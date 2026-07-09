@@ -16,15 +16,14 @@ import fi.helsinki.cs.tmc.intellij.services.errors.ErrorMessageService;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.util.List;
 
 /** Checks if there are undone and downloadable exercises. */
 public class CheckForNewExercises {
 
-    private static final Logger logger = LoggerFactory.getLogger(CheckForNewExercises.class);
+    private static final Logger logger = Logger.getInstance(CheckForNewExercises.class);
 
     public void doCheck() {
         ApplicationManager.getApplication()

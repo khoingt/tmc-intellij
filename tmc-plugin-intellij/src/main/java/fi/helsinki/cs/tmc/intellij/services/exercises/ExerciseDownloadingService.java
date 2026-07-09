@@ -18,8 +18,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 /** Offers method for downloading exercises from selected course. */
 public class ExerciseDownloadingService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExerciseDownloadingService.class);
+    private static final Logger logger = Logger.getInstance(ExerciseDownloadingService.class);
 
     public static void startDownloadExercise(
             final TmcCore core,
@@ -94,8 +93,7 @@ public class ExerciseDownloadingService {
                 logger.warn(
                         "Failed to check available exercises. "
                                 + "Course not selected. @ExerciseDownloadingService",
-                        except,
-                        except.getStackTrace());
+                        except);
                 new ErrorMessageService()
                         .showErrorMessageWithExceptionDetails(
                                 except,

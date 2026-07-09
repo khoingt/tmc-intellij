@@ -17,8 +17,7 @@ import fi.helsinki.cs.tmc.intellij.services.errors.ErrorMessageService;
 import fi.helsinki.cs.tmc.intellij.services.persistence.ExerciseDatabase;
 import fi.helsinki.cs.tmc.intellij.services.persistence.PersistentExerciseDatabase;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -34,7 +33,7 @@ import java.util.Map;
  */
 public class CourseAndExerciseManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(CourseAndExerciseManager.class);
+    private static final Logger logger = Logger.getInstance(CourseAndExerciseManager.class);
 
     public Exercise getExercise(String course, String exercise) {
         logger.info("Get exercise from CourseAndExerciseManager. @CourseAndExerciseManager");
@@ -55,15 +54,14 @@ public class CourseAndExerciseManager {
         } catch (Exception exception) {
             logger.warn(
                     "Exercise was not found. @CourseAndExerciseManager",
-                    exception,
-                    exception.getStackTrace());
+                    exception);
         }
         return null;
     }
 
     private boolean exerciseIsTheCorrectOne(Exercise exc, String exerciseName) {
         logger.info(
-                "Checking if {} equals {}. @CourseAndExerciseManager", exc.getName(), exerciseName);
+                "Checking if " + exc.getName() + " equals " + exerciseName + ". @CourseAndExerciseManager");
 
         return exc.getName().equals(exerciseName);
     }
@@ -76,8 +74,7 @@ public class CourseAndExerciseManager {
         } catch (Exception exception) {
             logger.warn(
                     "Course was not found. @CourseAndExerciseManager",
-                    exception,
-                    exception.getStackTrace());
+                    exception);
             ErrorMessageService error = new ErrorMessageService();
             error.showErrorMessageWithExceptionDetails(
                     exception, "Could not find the course.", false);
@@ -108,8 +105,7 @@ public class CourseAndExerciseManager {
         } catch (TmcCoreException exception) {
             logger.warn(
                     "Failed to fetch courses from TmcCore. @CourseAndExerciseManager",
-                    exception,
-                    exception.getStackTrace());
+                    exception);
             if (TmcSettingsManager.get().getOrganization().isPresent()) {
                 showMessageDialog();
                 refreshCoursesOffline();
@@ -145,7 +141,7 @@ public class CourseAndExerciseManager {
 
     private void fetchCourseFromTmcCore(Map<String, List<Exercise>> database, Course course) {
         try {
-            logger.info("Fetching {} from TmcCore. @CourseAndExerciseManager", course);
+            logger.info("Fetching " + course + " from TmcCore. @CourseAndExerciseManager");
             course =
                     TmcCoreHolder.get()
                             .getCourseDetails(ProgressObserver.NULL_OBSERVER, course)
@@ -158,8 +154,7 @@ public class CourseAndExerciseManager {
         } catch (Exception exception) {
             logger.warn(
                     "Failed to initiate database. @CourseAndExerciseManager",
-                    exception,
-                    exception.getStackTrace());
+                    exception);
             new ErrorMessageService()
                     .showErrorMessageWithExceptionDetails(
                             exception, "Failed to initiate database", true);
@@ -194,7 +189,7 @@ public class CourseAndExerciseManager {
             Exercise exercise = iterator.next();
 
             if (!exerciseNamesThroughDirectories.contains(exercise.getName())) {
-                logger.info("Removed {}. @CourseAndExerciseManager", exercise.getName());
+                logger.info("Removed " + exercise.getName() + ". @CourseAndExerciseManager");
                 iterator.remove();
             }
         }
@@ -202,9 +197,8 @@ public class CourseAndExerciseManager {
 
     private List<String> getExerciseNamesThroughDirectories(String courseName) {
         logger.info(
-                "Fetching {} course exercise names from the local "
-                        + "directories. @CourseAndExerciseManager",
-                courseName);
+                "Fetching " + courseName + " course exercise names from the local "
+                        + "directories. @CourseAndExerciseManager");
 
         return new ObjectFinder().listAllDownloadedExercises(courseName);
     }
@@ -245,8 +239,7 @@ public class CourseAndExerciseManager {
 
     public boolean isCourseInDatabase(String string) {
         logger.info(
-                "Checking if course {} exists in the database." + " @CourseAndExerciseManager",
-                string);
+                "Checking if course " + string + " exists in the database." + " @CourseAndExerciseManager");
         return PersistentExerciseDatabase.getInstance()
                 .getExerciseDatabase()
                 .getCourses()

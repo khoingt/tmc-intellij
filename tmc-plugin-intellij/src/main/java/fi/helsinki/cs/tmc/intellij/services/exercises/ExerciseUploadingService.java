@@ -26,13 +26,12 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 /** Offers method to upload exercises. */
 public class ExerciseUploadingService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CheckForExistingExercises.class);
+    private static final Logger logger = Logger.getInstance(CheckForExistingExercises.class);
 
     public void startUploadExercise(
             Project project,
@@ -109,8 +108,7 @@ public class ExerciseUploadingService {
                         logger.warn(
                                 "Could not getExercise submission results. "
                                         + "@ExerciseUploadingService",
-                                exception,
-                                exception.getStackTrace());
+                                exception);
                         exception.printStackTrace();
 
                         new ErrorMessageService().showHumanReadableErrorMessage(exception, true);
@@ -118,8 +116,7 @@ public class ExerciseUploadingService {
                         logger.warn(
                                 "Could not getExercise submission results. "
                                         + "@ExerciseUploadingService",
-                                exception,
-                                exception.getStackTrace());
+                                exception);
                         exception.printStackTrace();
                     }
                 },

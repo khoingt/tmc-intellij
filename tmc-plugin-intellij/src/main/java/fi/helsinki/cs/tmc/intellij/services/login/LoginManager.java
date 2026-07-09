@@ -12,8 +12,7 @@ import fi.helsinki.cs.tmc.intellij.io.SettingsTmc;
 import fi.helsinki.cs.tmc.intellij.services.errors.ErrorMessageService;
 import fi.helsinki.cs.tmc.intellij.services.exercises.CourseAndExerciseManager;
 import fi.helsinki.cs.tmc.intellij.services.persistence.PersistentTmcSettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,7 +23,7 @@ public class LoginManager {
     private IOException connectionException;
     private AuthenticationFailedException authenticationException;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginManager.class);
+    private static final Logger logger = Logger.getInstance(LoginManager.class);
 
     public boolean login(String password) {
         ErrorMessageService errorMessageService = new ErrorMessageService();

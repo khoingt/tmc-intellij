@@ -17,14 +17,13 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindowManager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.nio.charset.StandardCharsets;
 
 public class TestRunningService {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestRunningService.class);
+    private static final Logger logger = Logger.getInstance(TestRunningService.class);
 
     public void runTests(
             final Exercise exercise,
@@ -43,9 +42,8 @@ public class TestRunningService {
         } else {
             Exception exception = new Exception();
             logger.warn(
-                    "Running tests failed, exercise {} was not "
+                    "Running tests failed, exercise " + exercise + " was not "
                             + "recognized. @TestRunningService",
-                    exercise,
                     exception);
             new ErrorMessageService()
                     .showErrorMessageWithExceptionDetails(
