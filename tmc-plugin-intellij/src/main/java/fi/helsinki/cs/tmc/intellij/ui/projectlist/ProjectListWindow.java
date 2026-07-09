@@ -4,12 +4,12 @@ import fi.helsinki.cs.tmc.intellij.holders.ProjectListManagerHolder;
 import fi.helsinki.cs.tmc.intellij.holders.TmcSettingsManager;
 import fi.helsinki.cs.tmc.intellij.io.ProjectOpener;
 import fi.helsinki.cs.tmc.intellij.services.ObjectFinder;
-import fi.helsinki.cs.tmc.intellij.services.ProgressWindowMaker;
-import fi.helsinki.cs.tmc.intellij.services.ThreadingService;
 import fi.helsinki.cs.tmc.intellij.services.exercises.CourseAndExerciseManager;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.Project;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -113,28 +113,25 @@ public class ProjectListWindow {
         refreshButton.setBorderPainted(true);
         refreshButton.setEnabled(true);
 
-        ProgressIndicator window = ProgressWindowMaker.make("Refreshing project list",
-                new ObjectFinder().findCurrentProject(), false, true, true);
-
         refreshButton.addActionListener(actionEvent -> {
-            ThreadingService threadingService = new ThreadingService();
-            threadingService.runWithNotification(
-                    new Thread(() -> refreshProjectList()),
-                    new ObjectFinder().findCurrentProject(),
-                    window);
+            refreshProjectList();
         });
 
         return refreshButton;
     }
 
     public void refreshProjectList() {
-        ApplicationManager.getApplication().executeOnPooledThread(() -> {
-            new CourseAndExerciseManager().initiateDatabase();
-            ApplicationManager.getApplication().invokeLater(() -> {
-                logger.info("Refreshing project list. @ProjectListWindow");
-                ProjectListManagerHolder.get().refreshAllCourses();
-            });
-        });
+        Project project = new ObjectFinder().findCurrentProject();
+        new Task.Backgroundable(project, "Refreshing project list", false) {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                new CourseAndExerciseManager().initiateDatabase();
+                ApplicationManager.getApplication().invokeLater(() -> {
+                    logger.info("Refreshing project list. @ProjectListWindow");
+                    ProjectListManagerHolder.get().refreshAllCourses();
+                });
+            }
+        }.queue();
     }
 
 
