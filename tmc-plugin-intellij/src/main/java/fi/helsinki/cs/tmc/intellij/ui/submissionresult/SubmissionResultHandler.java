@@ -5,12 +5,11 @@ import fi.helsinki.cs.tmc.core.domain.submission.SubmissionResult;
 
 import com.intellij.openapi.project.Project;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 public class SubmissionResultHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(SubmissionResultHandler.class);
+    private static final Logger logger = Logger.getInstance(SubmissionResultHandler.class);
 
     public void showResultMessage(Exercise exercise, SubmissionResult result, Project project) {
         logger.info("Showing submission result message. @SubmissionResultHandler");

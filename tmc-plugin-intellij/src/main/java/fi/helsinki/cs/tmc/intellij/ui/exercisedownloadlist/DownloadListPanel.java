@@ -8,8 +8,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -27,7 +26,7 @@ public class DownloadListPanel {
     private CustomCheckBoxList exerciselist;
     private JPanel mainpanel;
     private JButton selectAllButton;
-    private static final Logger logger = LoggerFactory.getLogger(DownloadListPanel.class);
+    private static final Logger logger = Logger.getInstance(DownloadListPanel.class);
 
     public DownloadListPanel(List<Exercise> exercises, DownloadListWindow window) {
         logger.info("Creating downloadable exercises panel. @ DownloadListPanel");

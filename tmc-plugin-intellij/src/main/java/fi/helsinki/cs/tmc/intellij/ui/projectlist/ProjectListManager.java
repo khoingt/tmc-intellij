@@ -7,8 +7,8 @@ import fi.helsinki.cs.tmc.intellij.services.exercises.CourseAndExerciseManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.ui.components.JBList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import javax.swing.DefaultListModel;
  */
 public class ProjectListManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectListManager.class);
+    private static final Logger logger = Logger.getInstance(ProjectListManager.class);
     private static Map<String, List<JBList>> currentListElements;
     private static List<ProjectListWindow> projectListWindows;
 
@@ -49,7 +49,7 @@ public class ProjectListManager {
     }
 
     public void refreshCourse(String course) {
-        logger.info("Refreshing course {}. @ProjectListManager", course);
+        logger.info("Refreshing course " + course + ". @ProjectListManager");
         List<JBList> list = currentListElements.get(course);
         if (list == null) {
             return;

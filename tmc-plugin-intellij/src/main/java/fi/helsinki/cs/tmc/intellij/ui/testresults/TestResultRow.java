@@ -5,8 +5,7 @@ import fi.helsinki.cs.tmc.intellij.services.ObjectFinder;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.JBColor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -24,7 +23,7 @@ import javax.swing.border.Border;
  */
 public class TestResultRow extends JPanel {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestResultRow.class);
+    private static final Logger logger = Logger.getInstance(TestResultRow.class);
     private final GridBagConstraints constraints = new GridBagConstraints();
     private final Color borderColor;
     private final Color titleColor;

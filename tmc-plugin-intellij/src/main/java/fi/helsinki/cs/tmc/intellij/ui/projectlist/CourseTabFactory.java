@@ -16,8 +16,7 @@ import com.intellij.ui.components.JBScrollPane;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Desktop;
 import java.awt.event.ActionListener;
@@ -37,7 +36,7 @@ import javax.swing.SwingUtilities;
 /** Creates a tab in project list sidewindow and all components it requires. */
 public class CourseTabFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(CourseTabFactory.class);
+    private static final Logger logger = Logger.getInstance(CourseTabFactory.class);
 
     public void createCourseSpecificTab(
             ObjectFinder finder,
@@ -133,7 +132,7 @@ public class CourseTabFactory {
                         + File.separator + tabbedPanelBase
                         .getSelectedComponent().getName()));
             } catch (IOException e) {
-                logger.warn("Opening course directory failed.", e.getStackTrace());
+                logger.warn("Opening course directory failed.", e);
                 e.printStackTrace();
             }
         };
@@ -161,7 +160,7 @@ public class CourseTabFactory {
             } catch (IOException e1) {
                 e1.printStackTrace();
                 logger.warn("Deleting course folder failed",
-                        e1, e1.getStackTrace());
+                        e1);
             }
 
         };
@@ -272,7 +271,7 @@ public class CourseTabFactory {
             } catch (IOException e1) {
                 logger.warn("IOException occurred. Something interrupted "
                                 + "the mouse action. @CourseTabFactory",
-                        e1, e1.getStackTrace());
+                        e1);
                 new ErrorMessageService().showErrorMessageWithExceptionDetails(e1,
                         "IOException occurred. Something interrupted the mouse action.",
                         true);
@@ -309,7 +308,7 @@ public class CourseTabFactory {
             } catch (IOException e1) {
                 logger.warn("IOException occurred. Something interrupted "
                                 + "the mouse action. @CourseTabFactory",
-                        e1, e1.getStackTrace());
+                        e1);
                 new ErrorMessageService().showErrorMessageWithExceptionDetails(e1,
                         "IOException occurred. Something interrupted the mouse action.",
                         true);

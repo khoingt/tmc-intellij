@@ -10,8 +10,7 @@ import fi.helsinki.cs.tmc.snapshots.*;
 
 import com.intellij.openapi.application.ApplicationManager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 /**
  * This class is responsible for adding events to the buffer. The buffer then sends and saves the
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SnapshotsEventManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(SnapshotsEventManager.class);
+    private static final Logger logger = Logger.getInstance(SnapshotsEventManager.class);
 
     private static final EventSendBuffer buffer =
             new EventSendBuffer(new TmcServerCommunicationTaskFactory(), new EventStore());

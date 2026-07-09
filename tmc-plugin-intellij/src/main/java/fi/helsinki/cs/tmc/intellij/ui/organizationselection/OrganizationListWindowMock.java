@@ -4,8 +4,7 @@ import com.intellij.ui.components.JBScrollPane;
 import fi.helsinki.cs.tmc.core.domain.Organization;
 import fi.helsinki.cs.tmc.intellij.services.login.LoginManager;
 import fi.helsinki.cs.tmc.intellij.ui.settings.SettingsPanelMock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -16,7 +15,7 @@ public class OrganizationListWindowMock extends JPanel {
     private final JList<Organization> organizations;
     private static JButton button;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginManager.class);
+    private static final Logger logger = Logger.getInstance(LoginManager.class);
 
     public OrganizationListWindowMock(List<Organization> organizations) {
         Organization[] orgArray = organizations.toArray(new Organization[organizations.size()]);
@@ -51,7 +50,7 @@ public class OrganizationListWindowMock extends JPanel {
 
     class SelectOrganizationListenerMock implements ActionListener {
 
-        private final Logger logger = LoggerFactory.getLogger(LoginManager.class);
+        private final Logger logger = Logger.getInstance(LoginManager.class);
 
         public SelectOrganizationListenerMock(OrganizationListWindowMock window) {}
 

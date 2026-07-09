@@ -3,12 +3,11 @@ package fi.helsinki.cs.tmc.intellij.snapshots;
 import com.intellij.execution.ui.RunContentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.messages.MessageBusConnection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 public class SnapshotsRunListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(SnapshotsRunListener.class);
+    private static final Logger logger = Logger.getInstance(SnapshotsRunListener.class);
 
     public SnapshotsRunListener(Project project) {
         connectToMessageBus(project);

@@ -14,8 +14,7 @@ import fi.helsinki.cs.tmc.intellij.services.login.LoginManager;
 import fi.helsinki.cs.tmc.intellij.services.persistence.PersistentTmcSettings;
 import fi.helsinki.cs.tmc.intellij.ui.courseselection.CourseListWindow;
 import fi.helsinki.cs.tmc.intellij.ui.settings.SettingsPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -31,7 +30,7 @@ public class OrganizationListWindow extends JPanel {
     private final JBList<Organization> organizations;
     private static JButton button;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginManager.class);
+    private static final Logger logger = Logger.getInstance(LoginManager.class);
 
     public OrganizationListWindow(List<Organization> organizations) {
         Collections.sort(organizations, (a, b) -> {
@@ -150,7 +149,7 @@ public class OrganizationListWindow extends JPanel {
 
     class SelectOrganizationListener implements ActionListener {
 
-        private final Logger logger = LoggerFactory.getLogger(LoginManager.class);
+        private final Logger logger = Logger.getInstance(LoginManager.class);
 
         public SelectOrganizationListener(OrganizationListWindow window) {}
 

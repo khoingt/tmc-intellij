@@ -17,8 +17,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import icons.TmcIcons;
 
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,7 +34,7 @@ import javax.swing.JToolBar;
  */
 public class ProjectListWindow {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectListWindow.class);
+    private static final Logger logger = Logger.getInstance(ProjectListWindow.class);
 
     private JTabbedPane tabbedPaneBase;
 

@@ -1,8 +1,7 @@
 package fi.helsinki.cs.tmc.intellij.ui.exercisedownloadlist;
 
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Component;
 import java.awt.event.ItemEvent;
@@ -28,7 +27,7 @@ import javax.swing.border.EmptyBorder;
  */
 public class CustomCheckBoxList extends JList implements Iterable<JCheckBox> {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomCheckBoxList.class);
+    private static final Logger logger = Logger.getInstance(CustomCheckBoxList.class);
     private final List<ItemListener> itemListeners;
 
     public CustomCheckBoxList() {

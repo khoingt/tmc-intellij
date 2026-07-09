@@ -20,8 +20,7 @@ import com.intellij.openapi.vfs.VirtualFilePropertyEvent;
 
 import org.jetbrains.annotations.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.Closeable;
 import java.io.File;
@@ -31,7 +30,7 @@ import java.nio.file.Paths;
 
 public class SnapshotsFileListener implements Closeable {
 
-    private static final Logger logger = LoggerFactory.getLogger(SnapshotsFileListener.class);
+    private static final Logger logger = Logger.getInstance(SnapshotsFileListener.class);
     private String projectPath;
     private boolean closed;
     private final ActiveThreadSet snapshotterThreads;
@@ -200,7 +199,7 @@ public class SnapshotsFileListener implements Closeable {
             return;
         }
 
-        logger.info("Starting zipping thread for exercise: {0}", exercise);
+        logger.info("Starting zipping thread for exercise: " + exercise);
         SnapshotThread thread = new SnapshotThread(exercise, projectPath, metadata);
         snapshotterThreads.addThread(thread);
         thread.setDaemon(true);

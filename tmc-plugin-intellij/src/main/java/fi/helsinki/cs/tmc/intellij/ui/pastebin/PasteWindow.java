@@ -2,8 +2,7 @@ package fi.helsinki.cs.tmc.intellij.ui.pastebin;
 
 import fi.helsinki.cs.tmc.intellij.services.PasteService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.net.URI;
 import javax.swing.JFrame;
@@ -12,7 +11,7 @@ import javax.swing.JPanel;
 /** Controls the pastebin. */
 public class PasteWindow {
 
-    private static final Logger logger = LoggerFactory.getLogger(PasteWindow.class);
+    private static final Logger logger = Logger.getInstance(PasteWindow.class);
     private JFrame frame;
 
     public void showSubmit(PasteService pasteService) {

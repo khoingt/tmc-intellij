@@ -12,8 +12,7 @@ import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 
 import name.fraser.neil.plaintext.DiffMatchPatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ import java.util.List;
  */
 public class TextInputListener implements DocumentListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(TextInputListener.class);
+    private static final Logger logger = Logger.getInstance(TextInputListener.class);
 
     private final DiffMatchPatch diff = new DiffMatchPatch();
     private String previous;
@@ -45,7 +44,7 @@ public class TextInputListener implements DocumentListener {
             return;
         }
 
-        logger.info("Creating patches for ", documentEvent.getSource());
+        logger.info("Creating patches for " + documentEvent.getSource());
         createPatches(
                 PathResolver.getExercise(new ObjectFinder().findCurrentProject().getBasePath()),
                 documentEvent);

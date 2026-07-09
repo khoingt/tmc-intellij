@@ -3,8 +3,7 @@ package fi.helsinki.cs.tmc.intellij.ui.submissionresult.feedback;
 import fi.helsinki.cs.tmc.core.domain.submission.FeedbackAnswer;
 import fi.helsinki.cs.tmc.core.domain.submission.FeedbackQuestion;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Font;
 
@@ -18,7 +17,7 @@ import javax.swing.JTextField;
 
 public class IntRangeQuestionPanel extends FeedbackQuestionPanel {
 
-    private static final Logger logger = LoggerFactory.getLogger(IntRangeQuestionPanel.class);
+    private static final Logger logger = Logger.getInstance(IntRangeQuestionPanel.class);
     private FeedbackQuestion question;
     private int naValue;
 

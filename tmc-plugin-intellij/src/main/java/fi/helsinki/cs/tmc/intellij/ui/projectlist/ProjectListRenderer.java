@@ -5,8 +5,7 @@ import fi.helsinki.cs.tmc.intellij.holders.TmcSettingsManager;
 import fi.helsinki.cs.tmc.intellij.services.errors.ErrorMessageService;
 
 import icons.TmcIcons;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Component;
 import java.awt.Font;
@@ -17,7 +16,7 @@ import javax.swing.JList;
 /** Tells JList how to show its elements, allowing icons next to exercises. */
 public class ProjectListRenderer extends DefaultListCellRenderer {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectListRenderer.class);
+    private static final Logger logger = Logger.getInstance(ProjectListRenderer.class);
 
     private final Font font;
 
@@ -65,7 +64,7 @@ public class ProjectListRenderer extends DefaultListCellRenderer {
                 label.setIcon(TmcIcons.NOT_DONE_EXERCISE);
             }
         } catch (Exception ewr) {
-            logger.info("Failed to set icon.", ewr, ewr.getStackTrace());
+            logger.info("Failed to set icon.", ewr);
             new ErrorMessageService()
                     .showErrorMessageWithExceptionDetails(ewr, "Failed to set icon.", true);
         }

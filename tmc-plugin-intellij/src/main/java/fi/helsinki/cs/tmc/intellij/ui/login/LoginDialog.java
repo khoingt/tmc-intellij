@@ -13,8 +13,7 @@ import fi.helsinki.cs.tmc.intellij.services.login.LoginManager;
 import fi.helsinki.cs.tmc.intellij.services.persistence.PersistentTmcSettings;
 import fi.helsinki.cs.tmc.intellij.ui.courseselection.CourseListWindow;
 import fi.helsinki.cs.tmc.intellij.ui.organizationselection.OrganizationListWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +32,7 @@ public class LoginDialog extends JDialog {
     private Organization previousOrganization;
     private Course previousCourse;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginManager.class);
+    private static final Logger logger = Logger.getInstance(LoginManager.class);
 
     public LoginDialog() {
         setContentPane(contentPane);

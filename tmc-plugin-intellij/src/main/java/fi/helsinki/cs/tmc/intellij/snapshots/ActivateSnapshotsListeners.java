@@ -6,14 +6,13 @@ import fi.helsinki.cs.tmc.snapshots.*;
 
 import com.intellij.openapi.project.Project;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.IOException;
 
 public class ActivateSnapshotsListeners {
 
-    private static final Logger logger = LoggerFactory.getLogger(TextInputListener.class);
+    private static final Logger logger = Logger.getInstance(TextInputListener.class);
 
     private final Project project;
 
@@ -41,7 +40,7 @@ public class ActivateSnapshotsListeners {
         try {
             listener.close();
         } catch (IOException e) {
-            logger.warn("Failed to close listener.", e.getStackTrace());
+            logger.warn("Failed to close listener.", e);
         }
     }
 

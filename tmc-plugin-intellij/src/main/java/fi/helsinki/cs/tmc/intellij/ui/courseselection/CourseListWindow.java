@@ -13,8 +13,7 @@ import fi.helsinki.cs.tmc.intellij.io.SettingsTmc;
 import fi.helsinki.cs.tmc.intellij.services.login.LoginManager;
 import fi.helsinki.cs.tmc.intellij.services.persistence.PersistentTmcSettings;
 import fi.helsinki.cs.tmc.intellij.ui.settings.SettingsPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -30,7 +29,7 @@ public class CourseListWindow extends JPanel {
     private final JBList<Course> courses;
     private static JButton button;
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginManager.class);
+    private static final Logger logger = Logger.getInstance(LoginManager.class);
 
     public CourseListWindow(List<Course> courses) {
         Course[] courseArray = courses.toArray(new Course[courses.size()]);
@@ -156,7 +155,7 @@ public class CourseListWindow extends JPanel {
 
     class SelectCourseListener implements ActionListener {
 
-        private final Logger logger = LoggerFactory.getLogger(LoginManager.class);
+        private final Logger logger = Logger.getInstance(LoginManager.class);
 
         public SelectCourseListener(CourseListWindow window) {
         }

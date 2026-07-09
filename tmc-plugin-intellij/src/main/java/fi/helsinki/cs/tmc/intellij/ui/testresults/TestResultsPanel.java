@@ -6,8 +6,7 @@ import fi.helsinki.cs.tmc.langs.domain.TestResult;
 
 import com.intellij.ui.components.JBScrollPane;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -23,7 +22,7 @@ public class TestResultsPanel extends JPanel {
 
     private static final int MARGIN = 5;
 
-    private static final Logger logger = LoggerFactory.getLogger(TestResultsPanel.class);
+    private static final Logger logger = Logger.getInstance(TestResultsPanel.class);
     private GridBagConstraints resultsListConstraints;
     private TestResultProgressBar progressBar;
     private JPanel resultsList;

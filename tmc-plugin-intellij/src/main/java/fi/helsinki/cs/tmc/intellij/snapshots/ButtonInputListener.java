@@ -10,8 +10,7 @@ import com.google.gson.Gson;
 
 import org.jetbrains.annotations.Nullable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -23,7 +22,7 @@ import java.util.Collections;
  */
 public class ButtonInputListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(ButtonInputListener.class);
+    private static final Logger logger = Logger.getInstance(ButtonInputListener.class);
 
     public void receiveTestRun() {
         sendProjectActionEvent(getExercise(), "tmc.test");

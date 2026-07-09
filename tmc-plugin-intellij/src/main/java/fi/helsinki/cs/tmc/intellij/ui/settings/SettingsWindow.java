@@ -1,7 +1,6 @@
 package fi.helsinki.cs.tmc.intellij.ui.settings;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Dimension;
 import javax.swing.JFrame;
@@ -10,7 +9,7 @@ import javax.swing.JPanel;
 /** Creates and controls the settings window. */
 public class SettingsWindow {
 
-    private static final Logger logger = LoggerFactory.getLogger(SettingsWindow.class);
+    private static final Logger logger = Logger.getInstance(SettingsWindow.class);
 
     private final JFrame frame;
 

@@ -25,8 +25,7 @@ import fi.helsinki.cs.tmc.intellij.ui.login.LoginDialog;
 import fi.helsinki.cs.tmc.intellij.ui.organizationselection.OrganizationListWindow;
 import org.jetbrains.annotations.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -39,7 +38,7 @@ import javax.swing.*;
  */
 public class SettingsPanel {
 
-    private static final Logger logger = LoggerFactory.getLogger(SettingsPanel.class);
+    private static final Logger logger = Logger.getInstance(SettingsPanel.class);
     private JPanel panel1;
     private JFormattedTextField projectPathField;
     private JCheckBox checkForNewOrCheckBox;
@@ -254,7 +253,7 @@ public class SettingsPanel {
     private ActionListener createActionListenerBrowse() {
         logger.info("Creating action listener for browsing. @SettingsPanel");
         return actionEvent -> {
-            logger.info("Browsing action performed. @SettingsPanel", actionEvent);
+            logger.info("Browsing action performed. @SettingsPanel" + actionEvent);
             JFileChooser folderChooser = new JFileChooser();
             folderChooser.setDialogTitle("Select path for projects");
             folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

@@ -24,8 +24,7 @@ import com.intellij.ui.JBColor;
 import icons.TmcIcons;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -47,7 +46,7 @@ import javax.swing.JPanel;
 
 public class SuccessfulSubmissionDialog extends JDialog {
 
-    private static final Logger logger = LoggerFactory.getLogger(SuccessfulSubmissionDialog.class);
+    private static final Logger logger = Logger.getInstance(SuccessfulSubmissionDialog.class);
     private JButton okButton;
     private JButton nextExerciseButton;
     private List<FeedbackQuestionPanel> feedbackQuestionPanels;
@@ -140,8 +139,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
             logger.warn(
                     "Failed to send feedback. Problems with internet. "
                             + "@SuccessfulSubmissionDialog",
-                    ex,
-                    ex.getStackTrace());
+                    ex);
             String errorMessage = "Problems with internet.\n" + ex.getMessage();
             Messages.showErrorDialog(project, errorMessage, "Problem with Internet");
         }
@@ -253,8 +251,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
                     logger.warn(
                             "Failed to open browser. "
                                     + "Problem with browser. @SuccessfulSubmissionDialog",
-                            ex,
-                            ex.getStackTrace());
+                            ex);
                     new ErrorMessageService()
                             .showErrorMessageWithExceptionDetails(
                                     ex, "Failed to open browser. Problem with browser.", true);

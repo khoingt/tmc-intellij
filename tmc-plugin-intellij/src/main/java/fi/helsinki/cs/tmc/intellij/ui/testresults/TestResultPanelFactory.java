@@ -11,15 +11,14 @@ import com.intellij.ui.content.ContentFactory;
 
 import org.jetbrains.annotations.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestResultPanelFactory implements ToolWindowFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestResultPanelFactory.class);
+    private static final Logger logger = Logger.getInstance(TestResultPanelFactory.class);
     private static List<TestResultsPanel> panels;
 
     public TestResultPanelFactory() {
