@@ -3,6 +3,7 @@ package fi.helsinki.cs.tmc.intellij.ui.submissionresult;
 import static fi.helsinki.cs.tmc.intellij.ui.submissionresult.feedback.Boxer.hbox;
 import static fi.helsinki.cs.tmc.intellij.ui.submissionresult.feedback.Boxer.hglue;
 
+import fi.helsinki.cs.tmc.core.domain.Course;
 import fi.helsinki.cs.tmc.core.domain.Exercise;
 import fi.helsinki.cs.tmc.core.domain.ProgressObserver;
 import fi.helsinki.cs.tmc.core.domain.submission.FeedbackAnswer;
@@ -17,6 +18,8 @@ import fi.helsinki.cs.tmc.intellij.services.exercises.NextExerciseFetcher;
 import fi.helsinki.cs.tmc.intellij.ui.submissionresult.feedback.FeedbackQuestionPanel;
 import fi.helsinki.cs.tmc.intellij.ui.submissionresult.feedback.FeedbackQuestionPanelFactory;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.JBColor;
@@ -24,7 +27,6 @@ import com.intellij.ui.JBColor;
 import icons.TmcIcons;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -52,7 +54,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     private List<FeedbackQuestionPanel> feedbackQuestionPanels;
 
     public SuccessfulSubmissionDialog(Exercise exercise, SubmissionResult result, Project project) {
-        logger.info("Creating SuccessfulSubmissionDialog. @SuccessfulSubmissionDialog");
+        logger.debug("Creating SuccessfulSubmissionDialog. @SuccessfulSubmissionDialog");
         this.setTitle(exercise.getName() + " passed");
 
         JPanel contentPane = new JPanel();
@@ -87,10 +89,10 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     public void addOkListener(final SubmissionResult result, final Project project) {
-        logger.info("Adding action listener for ok button. @SuccessfulSubmissionDialog");
+        logger.debug("Adding action listener for ok button. @SuccessfulSubmissionDialog");
         this.okButton.addActionListener(
                 ev -> {
-                    logger.info("Ok button pressed. @SuccessfulSubmissionDialog");
+                    logger.debug("Ok button pressed. @SuccessfulSubmissionDialog");
                     sendFeedback(result, project);
                     setVisible(false);
                     dispose();
@@ -98,36 +100,46 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     public void addNextExerciseListener(final SubmissionResult result, final Project project) {
-        logger.info("Adding action listener for next exercise button. @SuccessfulSubmissionDialog");
+        logger.debug("Adding action listener for next exercise button. @SuccessfulSubmissionDialog");
         this.nextExerciseButton.addActionListener(
                 ev -> {
-                    logger.info("Next Exercise button pressed. @SuccessfulSubmissionDialog");
+                    logger.debug("Next Exercise button pressed. @SuccessfulSubmissionDialog");
                     String path = project.getBasePath();
-                    NextExerciseFetcher fetcher =
-                            new NextExerciseFetcher(
-                                    new ObjectFinder()
-                                            .findCourse(PathResolver.getCourseName(path), "name")
-                                            .getTitle(),
-                                    PathResolver.getExercise(path),
-                                    project);
 
-                    fetcher.tryToOpenNext();
-                    setVisible(false);
-                    dispose();
+                    ApplicationManager.getApplication().executeOnPooledThread(() -> {
+                        ObjectFinder finder = new ObjectFinder();
+                        Course course = finder.findCourse(
+                                PathResolver.getCourseName(path), "name");
+                        if (course == null) {
+                            return;
+                        }
+                        Exercise exercise = PathResolver.getExercise(path);
+                        if (exercise == null) {
+                            return;
+                        }
+
+                        NextExerciseFetcher fetcher =
+                                new NextExerciseFetcher(course.getTitle(), exercise, project);
+                        ApplicationManager.getApplication().invokeLater(() -> {
+                            fetcher.tryToOpenNext();
+                            setVisible(false);
+                            dispose();
+                        });
+                    });
                 });
     }
 
     private void sendFeedback(SubmissionResult result, Project project) {
-        logger.info("Checking if feedback exists. @SuccessfulSubmissionDialog");
+        logger.debug("Checking if feedback exists. @SuccessfulSubmissionDialog");
         List<FeedbackAnswer> answers = getFeedbackAnswers();
 
         if (answers.size() == 0) {
-            logger.info("No feedback. @SuccessfulSubmissionDialog");
+            logger.debug("No feedback. @SuccessfulSubmissionDialog");
             return;
         }
 
         try {
-            logger.info("Trying to send feedback. @SuccessfulSubmissionDialog");
+            logger.debug("Trying to send feedback. @SuccessfulSubmissionDialog");
             TmcCoreHolder.get()
                     .sendFeedback(
                             ProgressObserver.NULL_OBSERVER,
@@ -146,7 +158,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     public List<FeedbackAnswer> getFeedbackAnswers() {
-        logger.info("Getting feedback answer. @SuccessfulSubmissionDialog");
+        logger.debug("Getting feedback answer. @SuccessfulSubmissionDialog");
 
         List<FeedbackAnswer> answers = new ArrayList<>();
 
@@ -170,7 +182,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     private void addYayLabel() {
-        logger.info("Adding yay label. @SuccessfulSubmissionDialog");
+        logger.debug("Adding yay label. @SuccessfulSubmissionDialog");
         JLabel yayLabel = new JLabel("All tests passed on the server.");
 
         Font font = yayLabel.getFont();
@@ -189,7 +201,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     private void addRequiresReviewLabels() {
-        logger.info("Adding required review labels. @SuccessfulSubmissionDialog");
+        logger.debug("Adding required review labels. @SuccessfulSubmissionDialog");
         JLabel lbl1 = new JLabel("This exercise requires a code review.");
         String message = "It will have a yellow marker until it's accepted by an instructor.";
         JLabel lbl2 = new JLabel(message);
@@ -198,7 +210,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     private void addPointsLabel(SubmissionResult result) {
-        logger.info("Adding points label. @SuccessfulSubmissionDialog");
+        logger.debug("Adding points label. @SuccessfulSubmissionDialog");
         JLabel pointsLabel = new JLabel(getPointsMsg(result));
         pointsLabel.setFont(pointsLabel.getFont().deriveFont(Font.BOLD));
 
@@ -206,7 +218,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     private String getPointsMsg(SubmissionResult result) {
-        logger.info("Getting points message. @SuccessfulSubmissionDialog");
+        logger.debug("Getting points message. @SuccessfulSubmissionDialog");
 
         if (result.getPoints().isEmpty()) {
             return "";
@@ -219,7 +231,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     private void addModelSolutionButton(SubmissionResult result, final Project project) {
-        logger.info("Adding model solution button. @SuccessfulSubmissionDialog");
+        logger.debug("Adding model solution button. @SuccessfulSubmissionDialog");
         if (result.getSolutionUrl() == null) {
             return;
         }
@@ -263,7 +275,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     private void addFeedbackQuestions(SubmissionResult result) {
-        logger.info("Adding feedback questions. @SuccessfulSubmissionDialog");
+        logger.debug("Adding feedback questions. @SuccessfulSubmissionDialog");
         this.feedbackQuestionPanels = new ArrayList<>();
 
         if (result.getFeedbackQuestions().isEmpty() || result.getFeedbackQuestions() == null) {
@@ -287,7 +299,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     private void createQuestionPanelAndAddToPanelList(List<FeedbackQuestion> questions) {
-        logger.info(
+        logger.debug(
                 "Getting question panel and add questions to the panel. "
                         + "@SuccessfulSubmissionDialog");
         for (FeedbackQuestion question : questions) {
@@ -304,7 +316,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     private void addOkButton() {
-        logger.info("Adding ok button. @SuccessfulSubmissionDialog");
+        logger.debug("Adding ok button. @SuccessfulSubmissionDialog");
         okButton = new JButton("OK");
         okButton.addActionListener(
                 action -> {
@@ -315,7 +327,7 @@ public class SuccessfulSubmissionDialog extends JDialog {
     }
 
     private void addNextExerciseButton() {
-        logger.info("Adding next exercise button. @SuccessfulSubmissionDialog");
+        logger.debug("Adding next exercise button. @SuccessfulSubmissionDialog");
         nextExerciseButton = new JButton("Open Next Exercise");
         nextExerciseButton.addActionListener(
                 action -> {
