@@ -13,9 +13,11 @@ import fi.helsinki.cs.tmc.langs.domain.TestResult;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindowManager;
+import org.jetbrains.annotations.NotNull;
 
 import com.intellij.openapi.diagnostic.Logger;
 
@@ -28,71 +30,57 @@ public class TestRunningService {
     public void runTests(
             final Exercise exercise,
             Project project,
-            ThreadingService threadingService,
             ObjectFinder finder) {
         logger.info("Starting to run tests for current project. @TestRunningService");
 
-        ProgressIndicator window =
-                ProgressWindowMaker.make("Running tests", project, true, true, true);
-        CoreProgressObserver observer = new CoreProgressObserver(window);
-
-        if (exercise != null) {
-            prepareThreadForRunningTests(
-                    exercise, project, threadingService, finder, window, observer);
-        } else {
+        if (exercise == null) {
             Exception exception = new Exception();
             logger.warn(
-                    "Running tests failed, exercise " + exercise + " was not "
+                    "Running tests failed, exercise was not "
                             + "recognized. @TestRunningService",
                     exception);
             new ErrorMessageService()
                     .showErrorMessageWithExceptionDetails(
                             exception, "Running tests failed, exercise was not recognized", true);
+            return;
         }
-    }
 
-    private void prepareThreadForRunningTests(
-            final Exercise exercise,
-            final Project project,
-            ThreadingService threadingService,
-            ObjectFinder finder,
-            ProgressIndicator window,
-            final CoreProgressObserver observer) {
-        logger.info("Preparing thread for running tests. @TestRunningService");
-        threadingService.runWithNotification(
-                () -> {
-                    RunResult result;
-                    try {
-                        result = TmcCoreHolder.get().runTests(observer, exercise).call();
-                    } catch (Exception exception) {
-                        logger.warn("Could not run tests. @TestRunningService", exception);
-                        new ErrorMessageService()
-                                .showErrorMessageWithExceptionDetails(exception, "Running tests failed!", true);
-                        return;
-                    }
+        new Task.Backgroundable(project, "Running tests", true) {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                CoreProgressObserver observer = new CoreProgressObserver(indicator);
+                RunResult result;
+                try {
+                    result = TmcCoreHolder.get().runTests(observer, exercise).call();
+                } catch (Exception exception) {
+                    logger.warn("Could not run tests. @TestRunningService", exception);
+                    new ErrorMessageService()
+                            .showErrorMessageWithExceptionDetails(exception, "Running tests failed!", true);
+                    return;
+                }
 
-                    if (isErrorStatus(result.status)) {
-                        String stdout = getLog(result, SpecialLogs.STDOUT);
-                        String stderr = getLog(result, SpecialLogs.STDERR);
+                if (isErrorStatus(result.status)) {
+                    String stdout = getLog(result, SpecialLogs.STDOUT);
+                    String stderr = getLog(result, SpecialLogs.STDERR);
 
-                        String message = (result.status == RunResult.Status.COMPILE_FAILED)
-                                ? "Something went wrong while compiling the code. See details below."
-                                : "Something went wrong while running the tests. See details below.";
+                    String message = (result.status == RunResult.Status.COMPILE_FAILED)
+                            ? "Something went wrong while compiling the code. See details below."
+                            : "Something went wrong while running the tests. See details below.";
 
-                        new ErrorMessageService().showPopupWithDetails(
-                                message,
-                                "Test Error",
-                                stderr + System.lineSeparator() + stdout,
-                                NotificationType.ERROR
-                        );
-                        return;
-                    }
+                    new ErrorMessageService().showPopupWithDetails(
+                            message,
+                            "Test Error",
+                            stderr + System.lineSeparator() + stdout,
+                            NotificationType.ERROR
+                    );
+                    return;
+                }
 
-                    showTestResult(result);
-                    checkIfAllTestsPassed(result, project);
-                },
-                project,
-                window);
+                showTestResult(result);
+                checkIfAllTestsPassed(result, project);
+            }
+        }.queue();
+
         displayTestWindow(finder);
     }
 
