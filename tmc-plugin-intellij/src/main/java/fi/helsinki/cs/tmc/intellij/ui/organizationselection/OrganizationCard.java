@@ -1,5 +1,6 @@
 package fi.helsinki.cs.tmc.intellij.ui.organizationselection;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
@@ -43,10 +44,10 @@ public class OrganizationCard extends JPanel {
         setLogo(logoUrl("placeholderLogo.png"));
         final String logoPath = organization.getLogoPath();
         if(!logoPath.contains("missing")) {
-            new Thread(() -> {
+            ApplicationManager.getApplication().executeOnPooledThread(() -> {
                 setLogo(logoUrl(logoPath));
                 this.parent.repaint();
-            }).start();
+            });
         }
     }
 
