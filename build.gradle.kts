@@ -26,8 +26,6 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.5")
     implementation("jdom:jdom:1.1")
     implementation("org.picocontainer:picocontainer:2.15")
-    implementation("org.slf4j:slf4j-api:1.7.21")
-
 
 }
 
