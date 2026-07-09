@@ -8,13 +8,12 @@ import fi.helsinki.cs.tmc.intellij.holders.TmcCoreHolder;
 import fi.helsinki.cs.tmc.intellij.io.CoreProgressObserver;
 import fi.helsinki.cs.tmc.intellij.io.SettingsTmc;
 import fi.helsinki.cs.tmc.intellij.services.ObjectFinder;
-import fi.helsinki.cs.tmc.intellij.services.ProgressWindowMaker;
-import fi.helsinki.cs.tmc.intellij.services.ThreadingService;
 import fi.helsinki.cs.tmc.intellij.services.errors.ErrorMessageService;
 import fi.helsinki.cs.tmc.intellij.ui.exercisedownloadlist.DownloadListWindow;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import org.jetbrains.annotations.NotNull;
@@ -33,106 +32,82 @@ public class ExerciseDownloadingService {
             final SettingsTmc settings,
             final CheckForExistingExercises checker,
             ObjectFinder objectFinder,
-            ThreadingService threadingService,
             Project project,
-            boolean downloadAll,
-            ProgressIndicator window) {
+            boolean downloadAll) {
 
         logger.info(
                 "Preparing to start checking for available exercises."
                         + "@ExerciseDownloadingService");
-        Thread run = checkAvailableExercises(core, settings, checker, objectFinder, downloadAll);
-        threadingService.runWithNotification(run, project, window);
+
+        new Task.Backgroundable(project, "Checking for available exercises", true) {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                try {
+                    logger.info("Starting to check exercises. @ExerciseDownloadingService");
+
+                    final Course course =
+                            objectFinder.findCourse(
+                                    settings.getCurrentCourse().get().getName(), "name");
+
+                    List<Exercise> exercises = course.getExercises();
+                    exercises = checker.clean(exercises, settings);
+                    if (!downloadAll) {
+                        exercises = notCompletedExercises(exercises);
+                    }
+                    if (exercises == null || exercises.size() == 0) {
+                        new ErrorMessageService().showExercisesAreUpToDate(course);
+                        return;
+                    }
+                    new DownloadListWindow().showDownloadableExercises(exercises);
+
+                } catch (Exception except) {
+                    logger.warn(
+                            "Failed to check available exercises. "
+                                    + "Course not selected. @ExerciseDownloadingService",
+                            except);
+                    new ErrorMessageService()
+                            .showErrorMessageWithExceptionDetails(
+                                    except,
+                                    "You need to select a course to be able to download.",
+                                    true);
+                }
+            }
+        }.queue();
     }
 
     public static void startDownloading(List<Exercise> exercises) {
         logger.info("Preparing to start downloading exercises. @ExerciseDownloadingService");
-        ProgressIndicator window =
-                ProgressWindowMaker.make(
-                        "Downloading exercises, this may take a while",
-                        new ObjectFinder().findCurrentProject(),
-                        true,
-                        true,
-                        false);
-        CoreProgressObserver observer = new CoreProgressObserver(window);
-        Thread run = downloadSelectedExercises(TmcCoreHolder.get(), exercises, observer);
-        ThreadingService threadingService = new ThreadingService();
+
         Project project = new ObjectFinder().findCurrentProject();
-        threadingService.runWithNotification(run, project, window);
-    }
 
-    private static Thread checkAvailableExercises(
-            final TmcCore core,
-            final SettingsTmc settings,
-            final CheckForExistingExercises checker,
-            final ObjectFinder finder,
-            boolean downloadAll) {
-
-        logger.info(
-                "Creating a new thread to check available exercises. @ExerciseDownloadingService");
-
-        return new Thread(() -> {
-            try {
-                logger.info("Starting to check exercises. @ExerciseDownloadingService");
-
-                final Course course =
-                        finder.findCourse(settings.getCurrentCourse().get().getName(), "name");
-
-                List<Exercise> exercises = course.getExercises();
-                exercises = checker.clean(exercises, settings);
-                if (!downloadAll) {
-                    exercises = notCompletedExercises(exercises);
+        new Task.Backgroundable(project, "Downloading exercises, this may take a while", true) {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                CoreProgressObserver observer = new CoreProgressObserver(indicator);
+                try {
+                    List<Exercise> exerciseList =
+                            TmcCoreHolder.get().downloadOrUpdateExercises(observer, exercises).call();
+                    ApplicationManager.getApplication()
+                            .invokeLater(
+                                    () -> {
+                                        if (0
+                                                == Messages.showYesNoDialog(
+                                                        "Would you like to open the first "
+                                                         + "of the downloaded exercises?",
+                                                "Download Complete",
+                                                        null)) {
+                                            NextExerciseFetcher.openFirst(exerciseList);
+                                        }
+                                    });
+                } catch (Exception exception) {
+                    logger.info("Failed to download exercises. @ExerciseDownloadingService");
+                    new ErrorMessageService()
+                            .showErrorMessageWithExceptionDetails(exception, "Failed to download exercises.", true);
                 }
-                if (exercises == null || exercises.size() == 0) {
-                    new ErrorMessageService().showExercisesAreUpToDate(course);
-                    return;
-                }
-                new DownloadListWindow().showDownloadableExercises(exercises);
 
-            } catch (Exception except) {
-                logger.warn(
-                        "Failed to check available exercises. "
-                                + "Course not selected. @ExerciseDownloadingService",
-                        except);
-                new ErrorMessageService()
-                        .showErrorMessageWithExceptionDetails(
-                                except,
-                                "You need to select a course to be able to download.",
-                                true);
+                createThreadForRefreshingExerciseList();
             }
-        });
-    }
-
-    @NotNull
-    private static Thread downloadSelectedExercises(
-            final TmcCore core, final List<Exercise> exercises, CoreProgressObserver observer) {
-
-        logger.info("Creating a new thread. @ExerciseDownloadingService");
-
-        return new Thread(() -> {
-            try {
-                List<Exercise> exerciseList =
-                        core.downloadOrUpdateExercises(observer, exercises).call();
-                ApplicationManager.getApplication()
-                        .invokeLater(
-                                () -> {
-                                    if (0
-                                            == Messages.showYesNoDialog(
-                                                    "Would you like to open the first "
-                                                     + "of the downloaded exercises?",
-                                            "Download Complete",
-                                                    null)) {
-                                        NextExerciseFetcher.openFirst(exerciseList);
-                                    }
-                                });
-            } catch (Exception exception) {
-                logger.info("Failed to download exercises. @ExerciseDownloadingService");
-                new ErrorMessageService()
-                        .showErrorMessageWithExceptionDetails(exception, "Failed to download exercises.", true);
-            }
-
-            createThreadForRefreshingExerciseList();
-        });
+        }.queue();
     }
 
     private static boolean handleCreatingThread(
