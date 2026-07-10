@@ -9,9 +9,6 @@ import fi.helsinki.cs.tmc.intellij.holders.TmcCoreHolder;
 import fi.helsinki.cs.tmc.intellij.holders.TmcSettingsManager;
 import fi.helsinki.cs.tmc.intellij.services.errors.ErrorMessageService;
 
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 
@@ -221,17 +218,11 @@ public class ObjectFinder {
 
     public Project findCurrentProject() {
         logger.debug("Trying to findCurrentProject. @ObjectFinder");
-        DataContext dataContext = DataManager.getInstance().getDataContextFromFocus().getResult();
-
-        if (dataContext == null) {
-            Project[] projects = ProjectManager.getInstance().getOpenProjects();
-
-            if (projects.length > 0) {
-                return projects[projects.length - 1];
-            }
-            return null;
+        Project[] projects = ProjectManager.getInstance().getOpenProjects();
+        if (projects.length > 0) {
+            return projects[projects.length - 1];
         }
-        return CommonDataKeys.PROJECT.getData(dataContext);
+        return null;
     }
 
     public Course findCourseNoDetails(String courseName, TmcCore core) {
